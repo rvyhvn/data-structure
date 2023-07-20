@@ -1,16 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
-#include "../lib/bubble-sort.h"
-#include "../lib/heap-sort.h"
-#include "../lib/insertion-sort.h"
-#include "../lib/selection-sort.h"
+#include "../lib/sorting.h"
 
 void printArray(int arr[], int size) {
   for (int count = 0; count < size; count++) {
-    printf("%d ", arr[count]);
+    printf("%d", arr[count]);
+    if (count < size - 1) {
+      printf(", ");
+    }
   }
+  printf("\n");
 }
 
 int main(int argc, char *argv[]) {
@@ -21,14 +23,16 @@ int main(int argc, char *argv[]) {
         "Available sorting algorithms: bubble, heap, insertion, selection\n");
     return 1;
   }
-  int arr[] = {4, 2, 5, 7, 3, 1, 9};
+  int arr[] = {22, 42, 41, 17, 64, 91, 54, 11, 52, 87, 65, 23};
   int size = sizeof(arr) / sizeof(arr[0]);
   printf("Unsorted array: \n");
   printArray(arr, size);
   printf("\n");
   printf("Array length: %d\n", size);
+
   char *sortingAlgorithm = argv[1];
 
+  clock_t start_time = clock();
   if (strcmp(sortingAlgorithm, "bubble") == 0) {
     printf("\nUsing bubble sort: \n");
     bubbleSort(arr, size);
@@ -46,10 +50,13 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
+  clock_t end_time = clock();
+
+  double time_taken = ((double)(end_time - start_time)) / CLOCKS_PER_SEC * 1000;
   /* bubbleSort(arr, size); */
   printf("Sorted array: \n");
   printArray(arr, size);
   printf("\n");
-
+  printf("Time taken: %f\n", time_taken);
   return 0;
 }
