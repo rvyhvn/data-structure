@@ -36,15 +36,21 @@ int main(int argc, char *argv[]) {
   if (strcmp(sortingAlgorithm, "bubble") == 0) {
     printf("\nUsing bubble sort: \n");
     bubbleSort(arr, size);
-  } else if (strcmp(sortingAlgorithm, "heap") == 0) {
-    printf("\nUsing heap sort: \n");
-    heapSort(arr, size);
   } else if (strcmp(sortingAlgorithm, "insertion") == 0) {
     printf("\nUsing insertion sort: \n");
     insertionSort(arr, size);
   } else if (strcmp(sortingAlgorithm, "selection") == 0) {
     printf("\nUsing selection sort: \n");
     selectionSort(arr, size);
+  } else if (strcmp(sortingAlgorithm, "heap") == 0) {
+    printf("\nUsing heap sort, heapifying first..\n");
+    heapSort(arr, size);
+  } else if (strcmp(sortingAlgorithm, "merge") == 0) {
+    printf("\nUsing merge sort: \n");
+    mergeSort(arr, 0, size - 1);
+  } else if (strcmp(sortingAlgorithm, "quick") == 0) {
+    printf("\nUsing quick sort: \n");
+    quickSort(arr, size);
   } else {
     printf("Unknown sorting algorithms: %s\n", sortingAlgorithm);
     return 1;
@@ -53,7 +59,6 @@ int main(int argc, char *argv[]) {
   clock_t end_time = clock();
 
   double time_taken = ((double)(end_time - start_time)) / CLOCKS_PER_SEC * 1000;
-  /* bubbleSort(arr, size); */
   printf("Sorted array: \n");
   printArray(arr, size);
   printf("\n");
