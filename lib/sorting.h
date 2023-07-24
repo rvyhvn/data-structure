@@ -15,6 +15,7 @@ void selectionSort(int arr[], int size);
 void merge(int arr[], int p, int q, int r);
 void mergeSort(int arr[], int l, int m);
 /* ============ */
-void quickSort(int arr[], int size);
+int partition(int arr[], int low, int high);
+void quickSort(int arr[], int low, int high);
 
 #endif

@@ -150,7 +150,25 @@ void mergeSort(int *arr, int l, int r) {
   }
 }
 
-void quickSort(int *arr, int size) {
-  (void)arr;
-  (void)size;
+int partition(int *arr, int low, int high) {
+  int pivot = arr[high];
+  int i = low - 1;
+
+  for (int j = low; j < high; j++) {
+    if (arr[j] <= pivot) {
+      i++;
+      swap(&arr[i], &arr[j]);
+    }
+  }
+  swap(&arr[i + 1], &arr[high]);
+  return i + 1;
+}
+
+void quickSort(int *arr, int low, int high) {
+  if (low < high) {
+    int pivot_index = partition(arr, low, high);
+
+    quickSort(arr, low, pivot_index - 1);
+    quickSort(arr, pivot_index + 1, high);
+  }
 }

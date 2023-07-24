@@ -50,7 +50,7 @@ int main(int argc, char *argv[]) {
     mergeSort(arr, 0, size - 1);
   } else if (strcmp(sortingAlgorithm, "quick") == 0) {
     printf("\nUsing quick sort: \n");
-    quickSort(arr, size);
+    quickSort(arr, 0, size - 1);
   } else {
     printf("Unknown sorting algorithms: %s\n", sortingAlgorithm);
     return 1;
