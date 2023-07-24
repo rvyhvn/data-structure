@@ -4,6 +4,7 @@
 #include <time.h>
 
 #include "../lib/sorting.h"
+#include "../lib/structure.h"
 
 void printArray(int arr[], int size) {
   for (int count = 0; count < size; count++) {
