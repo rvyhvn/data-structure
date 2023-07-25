@@ -16,5 +16,7 @@ bool isStackEmpty(Stack *stack);
 bool isStackFull(Stack *stack);
 void pushStack(Stack *stack, int value);
 int popStack(Stack *stack);
+void saveStackState(Stack *stack, const char *filename);
+bool loadStackState(Stack *stack, const char *filename);
 
 #endif
