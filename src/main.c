@@ -7,8 +7,6 @@
 #include "../lib/sorting.h"
 #include "../lib/structure.h"
 
-Stack stack;
-
 void printArray(int arr[], int size) {
   for (int count = 0; count < size; count++) {
     printf("%d", arr[count]);
@@ -19,38 +17,38 @@ void printArray(int arr[], int size) {
   printf("\n");
 }
 
+void printBag(Bag *bag) {
+  for (int count = 0; count < bag->count; count++) {
+    printf("%d", bag->items[count]);
+    if (count != bag->count - 1) {
+      printf(", ");
+    }
+  }
+  printf("\n");
+}
+
 int main(int argc, char *argv[]) {
 
-  if (argc < 3) {
-    printf("Usage: %s <data_structure> <operation/sorting_algoritm> [value]\n",
-           argv[0]);
-    printf("Available data structures: stack\n");
-    printf("Available operation for data structures: push, pop\n");
-    printf(
-        "Available sorting algorithms: bubble, heap, insertion, selection\n");
+  if (argc < 2) {
+    printf("Usage: %s <command> [options]\n", argv[0]);
+    printf("Commands: stack, bags, sort\n");
     return 1;
   }
 
   if (strcmp(argv[1], "stack") == 0) {
-    // Check if a filename for the stack state is provided
     if (argc < 4) {
       printf("Usage: %s stack <operation> <filename> [value]\n", argv[0]);
       return 1;
     }
 
-    // Initialize a temporary stack
     Stack tempStack;
     initStack(&tempStack);
 
-    // Load the stack state from the specified file
     const char *filename = argv[3];
     if (!loadStackState(&tempStack, filename)) {
-      // If the file doesn't exist or cannot be loaded, initialize an empty
-      // stack
       initStack(&tempStack);
     }
 
-    // Perform stack operations
     if (strcmp(argv[2], "push") == 0 && argc == 5) {
       int value = atoi(argv[4]);
       pushStack(&tempStack, value);
@@ -72,10 +70,39 @@ int main(int argc, char *argv[]) {
       return 1;
     }
 
-    // Save the updated stack state back to the file
     saveStackState(&tempStack, filename);
-  } else {
+  } else if (strcmp(argv[1], "bags") == 0) {
+    if (argc < 4) {
+      printf("Usage: %s bags <operation> <filename> [value]\n", argv[0]);
+      return 1;
+    }
 
+    Bag tempBag;
+    initBag(&tempBag);
+
+    const char *filename = argv[3];
+    if (!loadBagState(&tempBag, filename)) {
+      initBag(&tempBag);
+    }
+
+    if (strcmp(argv[2], "push") == 0 && argc == 5) {
+      int value = atoi(argv[4]);
+      insertToBag(&tempBag, value);
+    } else if (strcmp(argv[2], "pop") == 0 && argc == 5) {
+      int value = atoi(argv[4]);
+      int removedValue = removeFromBag(&tempBag, value);
+      if (removedValue != INT_MIN) {
+        printf("Removed value from Bag: %d\n", removedValue);
+      } else {
+        printf("Value not found in the Bag.\n");
+      }
+    } else {
+      printf("Invalid operation\n");
+      return 1;
+    }
+
+    saveBagState(&tempBag, filename);
+  } else if (strcmp(argv[1], "sort") == 0) {
     int arr[] = {22, 42, 41, 17, 64, 91, 54, 11, 52, 87, 65, 23};
     int size = sizeof(arr) / sizeof(arr[0]);
     printf("Unsorted array: \n");
@@ -83,7 +110,14 @@ int main(int argc, char *argv[]) {
     printf("\n");
     printf("Array length: %d\n", size);
 
-    char *sortingAlgorithm = argv[1];
+    if (argc < 3) {
+      printf("Usage: %s sort <sorting_algorithm>\n", argv[0]);
+      printf("Available sorting algorithms: bubble, heap, insertion, "
+             "selection, merge, quick\n");
+      return 1;
+    }
+
+    char *sortingAlgorithm = argv[2];
 
     clock_t start_time = clock();
     if (strcmp(sortingAlgorithm, "bubble") == 0) {
@@ -117,7 +151,12 @@ int main(int argc, char *argv[]) {
     printArray(arr, size);
     printf("\n");
     printf("Time taken: %f\n", time_taken);
-    return 0;
+  } else {
+    printf("Unknown command: %s\n", argv[1]);
+    printf("Usage: %s <command> [options]\n", argv[0]);
+    printf("Commands: stack, bags, sort\n");
+    return 1;
   }
+
   return 0;
 }
