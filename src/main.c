@@ -27,11 +27,21 @@ void printBag(Bag *bag) {
   printf("\n");
 }
 
+void printQueue(Queue *queue) {
+  for (int i = queue->front; i <= queue->rear; i++) {
+    printf("%d", queue->items[i]);
+    if (i != queue->rear) {
+      printf(", ");
+    }
+  }
+  printf("\n");
+}
+
 int main(int argc, char *argv[]) {
 
   if (argc < 2) {
     printf("Usage: %s <command> [options]\n", argv[0]);
-    printf("Commands: stack, bags, sort\n");
+    printf("Commands: stack, bags, queue, sort\n");
     return 1;
   }
 
@@ -102,6 +112,44 @@ int main(int argc, char *argv[]) {
     }
 
     saveBagState(&tempBag, filename);
+
+  } else if (strcmp(argv[1], "queue") == 0) {
+
+    if (argc < 4) {
+      printf("Usage: %s queue <operation> <filename> [value]\n", argv[0]);
+      return 1;
+    }
+
+    Queue tempQueue;
+    initQueue(&tempQueue);
+
+    const char *filename = argv[3];
+    if (!loadQueueState(&tempQueue, filename)) {
+      initQueue(&tempQueue);
+    }
+
+    if (strcmp(argv[2], "enqueue") == 0 && argc == 5) {
+      int value = atoi(argv[4]);
+      enqueue(&tempQueue, value);
+    } else if (strcmp(argv[2], "dequeue") == 0 && argc == 4) {
+      int value = dequeue(&tempQueue);
+      if (value != INT_MIN) {
+        printf("Dequeued value from Queue: %d\n", value);
+      } else {
+        printf("Queue is empty.\n");
+      }
+    } else if (strcmp(argv[2], "is_full") == 0 && argc == 4) {
+      bool isFull = isQueueFull(&tempQueue);
+      printf("Is Queue full? %s\n", isFull ? "Yes" : "No");
+    } else if (strcmp(argv[2], "is_empty") == 0 && argc == 4) {
+      bool isEmpty = isQueueEmpty(&tempQueue);
+      printf("Is Queue empty? %s\n", isEmpty ? "Yes" : "No");
+    } else {
+      printf("Invalid operation.\n");
+      return 1;
+    }
+
+    saveQueueState(&tempQueue, filename);
   } else if (strcmp(argv[1], "sort") == 0) {
     int arr[] = {22, 42, 41, 17, 64, 91, 54, 11, 52, 87, 65, 23};
     int size = sizeof(arr) / sizeof(arr[0]);
@@ -154,7 +202,7 @@ int main(int argc, char *argv[]) {
   } else {
     printf("Unknown command: %s\n", argv[1]);
     printf("Usage: %s <command> [options]\n", argv[0]);
-    printf("Commands: stack, bags, sort\n");
+    printf("Commands: stack, bags, queue, sort\n");
     return 1;
   }
 
