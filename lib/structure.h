@@ -46,4 +46,15 @@ int dequeue(Queue *queue);
 void saveQueueState(Queue *queue, const char *filename);
 bool loadQueueState(Queue *queue, const char *filename);
 
+// Structure for a node in the linked list
+struct Node {
+  int value;
+  struct Node *next;
+};
+
+// Function declarations
+struct Node *createNode(int value);
+void appendNode(struct Node **head, int value);
+void printLinkedList(struct Node *head);
+
 #endif
