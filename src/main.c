@@ -151,7 +151,7 @@ int main(int argc, char *argv[]) {
 
     saveQueueState(&tempQueue, filename);
   } else if (strcmp(argv[1], "sort") == 0) {
-    int arr[] = {22, 42, 41, 17, 64, 91, 54, 11, 52, 87, 65, 23};
+    int arr[] = {12, 42, 32, 11, 21, 1, 3, 31, 23};
     int size = sizeof(arr) / sizeof(arr[0]);
     printf("Unsorted array: \n");
     printArray(arr, size);
@@ -161,7 +161,7 @@ int main(int argc, char *argv[]) {
     if (argc < 3) {
       printf("Usage: %s sort <sorting_algorithm>\n", argv[0]);
       printf("Available sorting algorithms: bubble, heap, insertion, "
-             "selection, merge, quick\n");
+             "selection, merge, quick, shell\n");
       return 1;
     }
 
@@ -186,6 +186,9 @@ int main(int argc, char *argv[]) {
     } else if (strcmp(sortingAlgorithm, "quick") == 0) {
       printf("\nUsing quick sort: \n");
       quickSort(arr, 0, size - 1);
+    } else if (strcmp(sortingAlgorithm, "shell") == 0) {
+      printf("\nUsing shell sort: \n");
+      shellSort(arr, size);
     } else {
       printf("Unknown sorting algorithms: %s\n", sortingAlgorithm);
       return 1;
@@ -193,8 +196,7 @@ int main(int argc, char *argv[]) {
 
     clock_t end_time = clock();
 
-    double time_taken =
-        ((double)(end_time - start_time)) / CLOCKS_PER_SEC * 1000;
+    double time_taken = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
     printf("Sorted array: \n");
     printArray(arr, size);
     printf("\n");

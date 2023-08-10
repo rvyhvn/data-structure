@@ -17,5 +17,5 @@ void mergeSort(int arr[], int l, int m);
 /* ============ */
 int partition(int arr[], int low, int high);
 void quickSort(int arr[], int low, int high);
-
+void shellSort(int arr[], int size);
 #endif
