@@ -1,6 +1,7 @@
 #include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "../lib/structure.h"
 
@@ -175,4 +176,40 @@ bool loadQueueState(Queue *queue, const char *filename) {
     return count > 0;
   }
   return false;
+}
+
+// Create a new node
+struct Node *createNode(int value) {
+  struct Node *newNode = (struct Node *)malloc(sizeof(struct Node));
+  if (newNode == NULL) {
+    fprintf(stderr, "Memory allocation failed\n");
+    exit(EXIT_FAILURE);
+  }
+  newNode->value = value;
+  newNode->next = NULL;
+  return newNode;
+}
+
+// Append a node to the end of the linked list
+void appendNode(struct Node **head, int value) {
+  struct Node *newNode = createNode(value);
+  if (*head == NULL) {
+    *head = newNode;
+  } else {
+    struct Node *current = *head;
+    while (current->next != NULL) {
+      current = current->next;
+    }
+    current->next = newNode;
+  }
+}
+
+// Print the linked list
+void printLinkedList(struct Node *head) {
+  struct Node *current = head;
+  while (current != NULL) {
+    printf("%d ", current->value);
+    current = current->next;
+  }
+  printf("\n");
 };
