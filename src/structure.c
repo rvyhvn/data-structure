@@ -213,3 +213,58 @@ void printLinkedList(struct Node *head) {
   }
   printf("\n");
 };
+
+void initLinkedList(LinkedList *list) { list->head = NULL; }
+
+void appendToLinkedList(LinkedList *list, int value) {
+  if (list->head == NULL) {
+    list->head = createNode(value);
+  } else {
+    appendNode(&(list->head), value);
+  }
+}
+
+void saveLinkedListState(LinkedList *list, const char *filename) {
+  FILE *file = fopen(filename, "w");
+  if (file != NULL) {
+    struct Node *current = list->head;
+    while (current != NULL) {
+      fprintf(file, "%d, %p, %p", current->value, (void *)current,
+              (void *)current->next);
+      if (current->next != NULL) {
+        fprintf(file, ", ");
+      }
+      current = current->next;
+    }
+    fprintf(file, "\n");
+    fclose(file);
+  }
+}
+
+bool loadLinkedListState(LinkedList *list, const char *filename) {
+  FILE *file = fopen(filename, "r");
+  if (file != NULL) {
+    int value;
+    void *currentAddress;
+    void *nextAddress;
+    while (fscanf(file, "%d, %p, %p", &value, &currentAddress, &nextAddress) ==
+           3) {
+      struct Node *current = (struct Node *)currentAddress;
+      struct Node *next = (struct Node *)nextAddress;
+      appendToLinkedList(list, value);
+      if (list->head == NULL) {
+        list->head = current;
+      } else {
+        struct Node *lastNode = list->head;
+        while (lastNode->next != NULL) {
+          lastNode = lastNode->next;
+        }
+        lastNode->next = current;
+      }
+      current->next = next;
+    }
+    fclose(file);
+    return true;
+  }
+  return false;
+};

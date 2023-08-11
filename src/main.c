@@ -343,7 +343,7 @@ int main(int argc, char *argv[]) {
     printf("Sorted array: \n");
     printArray(arr, size);
     printf("\n");
-    printf("Time taken: %f\n", time_taken);
+    printf("Time taken: %f seconds\n", time_taken);
   } else if (strcmp(argv[1], "linkedlist") == 0) {
     struct Node *head = NULL;
 

@@ -57,4 +57,7 @@ struct Node *createNode(int value);
 void appendNode(struct Node **head, int value);
 void printLinkedList(struct Node *head);
 
+typedef struct {
+  struct Node *head;
+} LinkedList;
 #endif
