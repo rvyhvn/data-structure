@@ -1,23 +1,12 @@
 #ifndef STACK_H
 #define STACK_H
 
-#include <stdbool.h>
+typedef struct NodeStack NodeStack;
+NodeStack *createStack(int value);
+void push(NodeStack **top, int value);
+int pop(NodeStack **top);
+int peekStack(NodeStack *top);
 
-#define MAX_SIZE 100
-
-typedef struct {
-  int items[MAX_SIZE];
-  int top;
-} Stack;
-
-void initStack(Stack *stack);
-bool isStackEmpty(Stack *stack);
-bool isStackFull(Stack *stack);
-void pushStack(Stack *stack, int value);
-int popStack(Stack *stack);
-void saveStackState(Stack *stack, const char *filename);
-bool loadStackState(Stack *stack, const char *filename);
-#endif // !
-
+#endif // STACK_H
 
 

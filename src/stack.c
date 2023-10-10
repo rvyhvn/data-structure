@@ -1,73 +1,92 @@
-#include <limits.h>
-#include <stdbool.h>
 #include <stdio.h>
-
+#include <stdlib.h>
 #include "../lib/stack.h"
 
-void initStack(Stack *stack) { stack->top = -1; }
+struct NodeStack {
+  int data;
+  struct NodeStack *next;
+};
 
-bool isStackEmpty(Stack *stack) { return stack->top == -1; }
+NodeStack *createStack(int value) {
+  NodeStack *newStack = (NodeStack *)malloc(sizeof(NodeStack));
+  if (newStack != NULL) {
+    newStack->data = value;
+    newStack->next = NULL;
+  }
+  return newStack;
+}
 
-bool isStackFull(Stack *stack) { return stack->top == MAX_SIZE - 1; }
-
-void pushStack(Stack *stack, int value) {
-  if (!isStackFull(stack)) {
-    stack->items[++stack->top] = value;
+void push(NodeStack **top, int value) {
+  NodeStack *newNode = createStack(value);
+  if (newNode != NULL) {
+    newNode->next = *top;
+    *top = newNode;
   }
 }
 
-int popStack(Stack *stack) {
-  if (!isStackEmpty(stack)) {
-    int value = stack->items[stack->top--];
-    return value;
+int pop(NodeStack **top) {
+  if (*top == NULL) {
+    return -1; // Stack is empty
   }
-  return INT_MIN;
+  int data = (*top)->data;
+  NodeStack *temp = *top;
+  *top = (*top)->next;
+  free(temp);
+  return data;
 }
 
-void saveStackState(Stack *stack, const char *filename) {
-  // Open the file in "write" mode to clear it.
-  FILE *file = fopen(filename, "w");
-  if (file != NULL) {
-    // Read the existing contents of the file and store them in memory.
-    int existing[MAX_SIZE];
-    int count = 0;
-    int value;
-    while (fscanf(file, "%d,", &value) == 1) {
-      existing[count++] = value;
-    }
-    fclose(file);
+int peekStack(NodeStack *top) {
+  if (top == NULL) {
+    return -1; // Stack is empty
+  }
+  return top->data;
+}
 
-    // Append the new stack state to the existing contents in memory.
-    for (int i = 0; i <= stack->top; i++) {
-      existing[count++] = stack->items[i];
-    }
+void stackMenu() {
+    NodeStack *top = NULL;
+    int stackChoice;
 
-    // Rewrite the file with the combined contents.
-    file = fopen(filename, "w");
-    if (file != NULL) {
-      for (int i = 0; i < count; i++) {
-        fprintf(file, "%d", existing[i]);
-        if (i != count - 1) {
-          fprintf(file, ",");
+    do {
+        printf("Stack Menu:\n");
+        printf("1. Push\n");
+        printf("2. Pop\n");
+        printf("3. Peek\n");
+        printf("0. Back\n");
+        printf("Option: ");
+        scanf("%d", &stackChoice);
+
+        switch (stackChoice) {
+            case 1:
+                printf("Enter a value to push: ");
+                int value;
+                scanf("%d", &value);
+                push(&top, value);
+                break;
+            case 2: {
+                int popped = pop(&top);
+                if (popped != -1) {
+                    printf("Popped value: %d\n", popped);
+                } else {
+                    printf("Stack is empty.\n");
+                }
+                break;
+            }
+            case 3: {
+                int peeked = peekStack(top);
+                if (peeked != -1) {
+                    printf("Top value: %d\n", peeked);
+                } else {
+                    printf("Stack is empty.\n");
+                }
+                break;
+            }
+            case 0:
+                break;
+            default:
+                printf("Menu invalid!\n");
         }
-      }
-      fprintf(file, "\n");
-      fclose(file);
-    }
-  }
+
+    } while (stackChoice != 0);
 }
 
-bool loadStackState(Stack *stack, const char *filename) {
-  FILE *file = fopen(filename, "r");
-  if (file != NULL) {
-    int value;
-    int i = 0;
-    while (fscanf(file, "%d,", &value) == 1) {
-      stack->items[i++] = value;
-    }
-    stack->top = i - 1;
-    fclose(file);
-    return true;
-  }
-  return false;
-}
+

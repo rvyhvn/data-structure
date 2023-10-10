@@ -4,53 +4,100 @@
 
 #include "../lib/queue.h"
 
-void initQueue(Queue *queue) {
-  queue->front = 0;
-  queue->rear = -1;
-}
-
-bool isQueueEmpty(Queue *queue) { return queue->rear < queue->front; }
-
-bool isQueueFull(Queue *queue) { return queue->rear == MAX_SIZE - 1; }
-
-void enqueue(Queue *queue, int value) {
-  if (!isQueueFull(queue)) {
-    queue->items[++queue->rear] = value;
-  }
-}
-
-int dequeue(Queue *queue) {
-  if (!isQueueEmpty(queue)) {
-    int value = queue->items[queue->front++];
-    return value;
-  }
-  return INT_MIN;
-}
-
-void saveQueueState(Queue *queue, const char *filename) {
-  FILE *file = fopen(filename, "w");
-  if (file != NULL) {
-    for (int i = queue->front; i <= queue->rear; i++) {
-      fprintf(
-          file, "%d,",
-          queue->items[i]); // Gunakan koma sebagai pemisah antara nilai-nilai
-    }
-    fprintf(file, "\n");
-    fclose(file);
-  }
-}
-
-bool loadQueueState(Queue *queue, const char *filename) {
-  FILE *file = fopen(filename, "r");
-  if (file != NULL) {
-    int value;
-    int count = 0;
-    while (fscanf(file, "%d, ", &value) == 1) {
-      enqueue(queue, value);
-      count++;
-    }
-    fclose(file);
-    return count > 0;
-  }
-  return false;
+struct NodeQueue {
+  int data;
+  struct NodeQueue *next;
 };
+
+NodeQueue* createQueue(int value) {
+  NodeQueue *newQueue = (NodeQueue *)malloc(sizeof(NodeQueue));
+  if (newQueue != NULL) {
+    newQueue->data = value;
+    newQueue->next = NULL;
+  }
+  return newQueue;
+}
+
+void enqueue(NodeQueue **front, NodeQueue **rear, int value) {
+  NodeQueue *newNode = createQueue(value);
+  if (newNode != NULL) {
+    if (*rear == NULL) {
+      *front = newNode;
+      *rear = newNode;
+    } else {
+      (*rear)->next = newNode;
+      *rear = newNode;
+    }
+  }
+}
+
+int dequeue(NodeQueue **front, NodeQueue **rear) {
+  if (*front == NULL) {
+    return -1; // Queue is empty
+  }
+  int data = (*front)->data;
+  NodeQueue *temp = *front;
+  *front = (*front)->next;
+  if (*front == NULL) {
+    *rear = NULL; // If the last element is dequeued
+  }
+  free(temp);
+  return data;
+}
+
+int peekQueue(NodeQueue *front) {
+  if (front == NULL) {
+    return -1; // Queue is empty
+  }
+  return front->data;
+}
+
+void queueMenu() {
+    NodeQueue *front = NULL;
+    NodeQueue *rear = NULL;
+    int queueChoice;
+
+    do {
+        printf("Queue Menu:\n");
+        printf("1. Enqueue\n");
+        printf("2. Dequeue\n");
+        printf("3. Peek\n");
+        printf("0. Back\n");
+        printf("Option: ");
+        scanf("%d", &queueChoice);
+
+        switch (queueChoice) {
+            case 1:
+                printf("Enter a value to enqueue: ");
+                int value;
+                scanf("%d", &value);
+                enqueue(&front, &rear, value);
+                break;
+            case 2: {
+                int dequeued = dequeue(&front, &rear);
+                if (dequeued != -1) {
+                    printf("Dequeued value: %d\n", dequeued);
+                } else {
+                    printf("Queue is empty.\n");
+                }
+                break;
+            }
+            case 3: {
+                int peeked = peekQueue(front);
+                if (peeked != -1) {
+                    printf("Front value: %d\n", peeked);
+                } else {
+                    printf("Queue is empty.\n");
+                }
+                break;
+            }
+            case 0:
+                break;
+            default:
+                printf("Menu invalid!\n");
+        }
+
+    } while (queueChoice != 0);
+}
+
+
