@@ -1,4 +1,8 @@
+#include <limits.h>
+#include <stdbool.h>
+#include <stdio.h>
 
+#include "../lib/stack.h"
 
 void initStack(Stack *stack) { stack->top = -1; }
 

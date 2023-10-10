@@ -8,8 +8,7 @@
 typedef struct {
   int items[MAX_SIZE];
   int top;
-  Stack;
-}
+} Stack;
 
 void initStack(Stack *stack);
 bool isStackEmpty(Stack *stack);
@@ -19,7 +18,6 @@ int popStack(Stack *stack);
 void saveStackState(Stack *stack, const char *filename);
 bool loadStackState(Stack *stack, const char *filename);
 #endif // !
-#define STACK_H
 
 
 

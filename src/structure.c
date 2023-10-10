@@ -4,12 +4,6 @@
 
 #include "../lib/structure.h"
 
-#include <limits.h>
-#include <stdbool.h>
-#include <stdio.h>
-
-#include "../lib/stack.h"
-
 void initBag(Bag *bag) { bag->count = 0; }
 
 bool isBagEmpty(Bag *bag) { return bag->count == 0; }
