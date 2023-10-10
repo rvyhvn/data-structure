@@ -4,73 +4,11 @@
 
 #include "../lib/structure.h"
 
-void initStack(Stack *stack) { stack->top = -1; }
+#include <limits.h>
+#include <stdbool.h>
+#include <stdio.h>
 
-bool isStackEmpty(Stack *stack) { return stack->top == -1; }
-
-bool isStackFull(Stack *stack) { return stack->top == MAX_SIZE - 1; }
-
-void pushStack(Stack *stack, int value) {
-  if (!isStackFull(stack)) {
-    stack->items[++stack->top] = value;
-  }
-}
-
-int popStack(Stack *stack) {
-  if (!isStackEmpty(stack)) {
-    int value = stack->items[stack->top--];
-    return value;
-  }
-  return INT_MIN;
-}
-
-void saveStackState(Stack *stack, const char *filename) {
-  // Open the file in "write" mode to clear it.
-  FILE *file = fopen(filename, "w");
-  if (file != NULL) {
-    // Read the existing contents of the file and store them in memory.
-    int existing[MAX_SIZE];
-    int count = 0;
-    int value;
-    while (fscanf(file, "%d,", &value) == 1) {
-      existing[count++] = value;
-    }
-    fclose(file);
-
-    // Append the new stack state to the existing contents in memory.
-    for (int i = 0; i <= stack->top; i++) {
-      existing[count++] = stack->items[i];
-    }
-
-    // Rewrite the file with the combined contents.
-    file = fopen(filename, "w");
-    if (file != NULL) {
-      for (int i = 0; i < count; i++) {
-        fprintf(file, "%d", existing[i]);
-        if (i != count - 1) {
-          fprintf(file, ",");
-        }
-      }
-      fprintf(file, "\n");
-      fclose(file);
-    }
-  }
-}
-
-bool loadStackState(Stack *stack, const char *filename) {
-  FILE *file = fopen(filename, "r");
-  if (file != NULL) {
-    int value;
-    int i = 0;
-    while (fscanf(file, "%d,", &value) == 1) {
-      stack->items[i++] = value;
-    }
-    stack->top = i - 1;
-    fclose(file);
-    return true;
-  }
-  return false;
-}
+#include "../lib/stack.h"
 
 void initBag(Bag *bag) { bag->count = 0; }
 
@@ -126,53 +64,4 @@ bool loadBagState(Bag *bag, const char *filename) {
   return false;
 }
 
-void initQueue(Queue *queue) {
-  queue->front = 0;
-  queue->rear = -1;
-}
 
-bool isQueueEmpty(Queue *queue) { return queue->rear < queue->front; }
-
-bool isQueueFull(Queue *queue) { return queue->rear == MAX_SIZE - 1; }
-
-void enqueue(Queue *queue, int value) {
-  if (!isQueueFull(queue)) {
-    queue->items[++queue->rear] = value;
-  }
-}
-
-int dequeue(Queue *queue) {
-  if (!isQueueEmpty(queue)) {
-    int value = queue->items[queue->front++];
-    return value;
-  }
-  return INT_MIN;
-}
-
-void saveQueueState(Queue *queue, const char *filename) {
-  FILE *file = fopen(filename, "w");
-  if (file != NULL) {
-    for (int i = queue->front; i <= queue->rear; i++) {
-      fprintf(
-          file, "%d,",
-          queue->items[i]); // Gunakan koma sebagai pemisah antara nilai-nilai
-    }
-    fprintf(file, "\n");
-    fclose(file);
-  }
-}
-
-bool loadQueueState(Queue *queue, const char *filename) {
-  FILE *file = fopen(filename, "r");
-  if (file != NULL) {
-    int value;
-    int count = 0;
-    while (fscanf(file, "%d, ", &value) == 1) {
-      enqueue(queue, value);
-      count++;
-    }
-    fclose(file);
-    return count > 0;
-  }
-  return false;
-};
