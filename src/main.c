@@ -83,7 +83,7 @@ int main() {
       break;
     case 9:
       printf("Sorting (Quick Sort)\n");
-      quickSort(arr, arr_size);
+      quickSort(arr, 0, arr_size - 1);
       printArray(arr, arr_size);
       break;
     case 0:
