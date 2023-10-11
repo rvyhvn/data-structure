@@ -1,7 +1,7 @@
 #ifndef TREE_H
 #define TREE_H
 
-#define COUNT 10
+#define COUNT 5
 typedef struct TreeNode TreeNode;
 
 TreeNode *insert(TreeNode *root, int value);
