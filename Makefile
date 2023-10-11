@@ -1,6 +1,6 @@
 # Compiler and flags
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99
+CFLAGS = -Wall -Wextra -std=c99 -g  # Added the -g flag for debugging
 
 # Directories
 SRC_DIR = src
@@ -29,3 +29,8 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 
 clean:
 	rm -rf $(BUILD_DIR) $(TARGET)
+
+debug: $(TARGET)
+	gdb ./$(TARGET)
+
+.PHONY: all clean debug
