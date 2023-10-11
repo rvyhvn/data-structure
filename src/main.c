@@ -73,10 +73,10 @@ int main() {
       break;
     case 7:
       printf("Advanced Sorting (Merge)\n");
-      mergeSort(arr, arr_size);
+      mergeSort(arr, 0, arr_size - 1);
       printArray(arr, arr_size);
       break;
-     case 8:
+    case 8:
       printf("Sorting (Shell)\n");
       shellSort(arr, arr_size);
       printArray(arr, arr_size);
