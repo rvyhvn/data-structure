@@ -24,6 +24,9 @@ void queueMenu();
 void treeMenu();
 
 int main() {
+
+  int arr[] = {5, 4, 3, 2, 1};
+  int arr_size = sizeof(arr) / sizeof(arr[0]);
   int mainChoice;
   do {
     printf("Main Menu:\n");
@@ -33,6 +36,9 @@ int main() {
     printf("4. Sorting (Bubble)\n");
     printf("5. Sorting (Selection) \n");
     printf("6. Sorting (Insertion)\n");
+    printf("7. Advanced Sorting (Merge)\n");
+    printf("8. Advanced Sorting (Shell)\n");
+    printf("9. Advanced Sorting (Quick Sort)\n");
     printf("0. Quit\n");
     printf("Option: ");
     scanf("%d", &mainChoice);
@@ -52,15 +58,33 @@ int main() {
       break;
     case 4:
       printf("Sorting (Bubble)\n");
-      queueMenu();
+      bubbleSort(arr, arr_size);
+      printArray(arr, arr_size);
       break;
     case 5:
       printf("Sorting (Selection)\n");
-      queueMenu();
+      selectionSort(arr, arr_size);
+      printArray(arr, arr_size);
       break;
     case 6:
       printf("Sorting (Insertion)\n");
-      queueMenu();
+      insertionSort(arr, arr_size);
+      printArray(arr, arr_size);
+      break;
+    case 7:
+      printf("Advanced Sorting (Merge)\n");
+      mergeSort(arr, arr_size);
+      printArray(arr, arr_size);
+      break;
+     case 8:
+      printf("Sorting (Shell)\n");
+      shellSort(arr, arr_size);
+      printArray(arr, arr_size);
+      break;
+    case 9:
+      printf("Sorting (Quick Sort)\n");
+      quickSort(arr, arr_size);
+      printArray(arr, arr_size);
       break;
     case 0:
       printf("Quitting\n");

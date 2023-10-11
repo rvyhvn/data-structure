@@ -125,6 +125,24 @@ void postOrderTraversal(TreeNode *root) {
   }
 }
 
+void print2DUtil(TreeNode *root, int space) {
+  if (root == NULL)
+    return;
+
+  space += COUNT;
+
+  print2DUtil(root->right, space);
+
+  printf("\n");
+  for (int i = COUNT; i < space; i++)
+    printf(" ");
+  printf("%d\n", root->data);
+
+  print2DUtil(root->left, space);
+}
+
+void print2D(TreeNode *root) { print2DUtil(root, 0); }
+
 void treeMenu() {
   int treeChoice;
   TreeNode *root = NULL;
@@ -140,6 +158,7 @@ void treeMenu() {
     printf("8. In Order Traversal\n");
     printf("9. Pre-Order Traversal\n");
     printf("10. Post-Order Traversal\n");
+    printf("11. Visualize\n");
     printf("0. Back\n");
     printf("Option: ");
     scanf("%d", &treeChoice);
@@ -201,6 +220,10 @@ void treeMenu() {
       printf("Post-Order Traversal: ");
       postOrderTraversal(root);
       printf("\n");
+      break;
+
+    case 11:
+      print2D(root);
       break;
 
     case 0:
