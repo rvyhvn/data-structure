@@ -21,7 +21,7 @@ void printArray(int arr[], int size) {
 
 void stackMenu();
 void queueMenu();
-void treeMenu();
+void bstreeMenu();
 
 int main() {
   int originalArr[] = {5, 4, 3, 2, 1};
@@ -61,7 +61,7 @@ int main() {
       break;
     case 3:
       printf("Data Structure (Tree)\n");
-      treeMenu();
+      bstreeMenu();
       break;
     case 4:
       printf("Sorting (Bubble)\n");

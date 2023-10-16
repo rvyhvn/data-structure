@@ -2,14 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-struct TreeNode {
+struct BSTreeNode {
   int data;
-  struct TreeNode *left;
-  struct TreeNode *right;
+  struct BSTreeNode *left;
+  struct BSTreeNode *right;
 };
 
-TreeNode *createNode(int value) {
-  TreeNode *newNode = (TreeNode *)malloc(sizeof(TreeNode));
+BSTreeNode *createBSTNode(int value) {
+  BSTreeNode *newNode = (BSTreeNode *)malloc(sizeof(BSTreeNode));
   if (newNode == NULL) {
     printf("Error: Memory allocation failed.\n");
     return NULL;
@@ -22,130 +22,130 @@ TreeNode *createNode(int value) {
   return newNode;
 }
 
-TreeNode *insert(TreeNode *root, int value) {
+BSTreeNode *insertBSTNode(BSTreeNode *root, int value) {
   if (root == NULL) {
-    return createNode(value);
+    return createBSTNode(value);
   }
 
   if (value < root->data) {
-    root->left = insert(root->left, value);
+    root->left = insertBSTNode(root->left, value);
   } else if (value > root->data) {
-    root->right = insert(root->right, value);
+    root->right = insertBSTNode(root->right, value);
   }
 
   return root;
 }
 
-TreeNode *search(TreeNode *root, int value) {
+BSTreeNode *searchBSTNode(BSTreeNode *root, int value) {
   if (root == NULL || root->data == value) {
     return root;
   }
   if (value < root->data) {
-    return search(root->left, value);
+    return searchBSTNode(root->left, value);
   }
-  return search(root->right, value);
+  return searchBSTNode(root->right, value);
 }
 
-TreeNode *deleteNode(TreeNode *root, int value) {
+BSTreeNode *deleteBSTNode(BSTreeNode *root, int value) {
   if (root == NULL) {
     return root;
   }
   if (value < root->data) {
-    root->left = deleteNode(root->left, value);
+    root->left = deleteBSTNode(root->left, value);
   } else if (value > root->data) {
-    root->right = deleteNode(root->right, value);
+    root->right = deleteBSTNode(root->right, value);
   } else {
     if (root->left == NULL) {
-      TreeNode *temp = root->right;
+      BSTreeNode *temp = root->right;
       free(root);
       return temp;
     } else if (root->right == NULL) {
-      TreeNode *temp = root->left;
+      BSTreeNode *temp = root->left;
       free(root);
       return temp;
     }
-    int temp = findMin(root->right);
+    int temp = findMinBST(root->right);
     root->data = temp;
-    root->right = deleteNode(root->right, temp);
+    root->right = deleteBSTNode(root->right, temp);
   }
   return root;
 }
 
-int findMin(TreeNode *root) {
+int findMinBST(BSTreeNode *root) {
   while (root->left != NULL) {
     root = root->left;
   }
   return root->data;
 }
 
-int findMax(TreeNode *root) {
+int findMaxBST(BSTreeNode *root) {
   while (root->right != NULL) {
     root = root->right;
   }
   return root->data;
 }
 
-int findHeight(TreeNode *root) {
+int findHeightBST(BSTreeNode *root) {
   if (root == NULL) {
     return -1;
   }
-  int leftHeight = findHeight(root->left);
-  int rightHeight = findHeight(root->right);
+  int leftHeight = findHeightBST(root->left);
+  int rightHeight = findHeightBST(root->right);
   return (leftHeight > rightHeight ? leftHeight : rightHeight) + 1;
 }
 
-int treeSize(TreeNode *root) {
+int treeSizeBST(BSTreeNode *root) {
   if (root == NULL) {
     return 0;
   }
-  return 1 + treeSize(root->left) + treeSize(root->right);
+  return 1 + treeSizeBST(root->left) + treeSizeBST(root->right);
 }
 
-void inOrderTraversal(TreeNode *root) {
+void inOrderTraversalBST(BSTreeNode *root) {
   if (root != NULL) {
-    inOrderTraversal(root->left);
+    inOrderTraversalBST(root->left);
     printf("%d ", root->data);
-    inOrderTraversal(root->right);
+    inOrderTraversalBST(root->right);
   }
 }
 
-void preOrderTraversal(TreeNode *root) {
+void preOrderTraversalBST(BSTreeNode *root) {
   if (root != NULL) {
     printf("%d ", root->data);
-    preOrderTraversal(root->left);
-    preOrderTraversal(root->right);
+    preOrderTraversalBST(root->left);
+    preOrderTraversalBST(root->right);
   }
 }
 
-void postOrderTraversal(TreeNode *root) {
+void postOrderTraversalBST(BSTreeNode *root) {
   if (root != NULL) {
-    postOrderTraversal(root->left);
-    postOrderTraversal(root->right);
+    postOrderTraversalBST(root->left);
+    postOrderTraversalBST(root->right);
     printf("%d ", root->data);
   }
 }
 
-void print2DUtil(TreeNode *root, int space) {
+void print2DUtilBST(BSTreeNode *root, int space) {
   if (root == NULL)
     return;
 
   space += COUNT;
 
-  print2DUtil(root->right, space);
+  print2DUtilBST(root->right, space);
 
   printf("\n");
   for (int i = COUNT; i < space; i++)
     printf(" ");
   printf("%d\n", root->data);
 
-  print2DUtil(root->left, space);
+  print2DUtilBST(root->left, space);
 }
 
-void print2D(TreeNode *root) { print2DUtil(root, 0); }
+void print2DBST(BSTreeNode *root) { print2DUtilBST(root, 0); }
 
-void treeMenu() {
+void bstreeMenu() {
   int treeChoice;
-  TreeNode *root = NULL;
+  BSTreeNode *root = NULL;
   do {
     printf("Binary Tree Menu:\n");
     printf("1. Insert\n");
@@ -168,13 +168,13 @@ void treeMenu() {
       printf("Enter a value to insert: ");
       int value;
       scanf("%d", &value);
-      root = insert(root, value);
+      root = insertBSTNode(root, value);
       break;
 
     case 2:
       printf("Enter a value to search: ");
       scanf("%d", &value);
-      TreeNode *result = search(root, value);
+      BSTreeNode *result = searchBSTNode(root, value);
       if (result != NULL) {
         printf("Value found in the tree.\n");
       } else {
@@ -185,45 +185,45 @@ void treeMenu() {
     case 3:
       printf("Enter a value to delete: ");
       scanf("%d", &value);
-      root = deleteNode(root, value);
+      root = deleteBSTNode(root, value);
       break;
 
     case 4:
-      printf("Minimum value in the tree: %d\n", findMin(root));
+      printf("Minimum value in the tree: %d\n", findMinBST(root));
       break;
 
     case 5:
-      printf("Maximum value in the tree: %d\n", findMax(root));
+      printf("Maximum value in the tree: %d\n", findMaxBST(root));
       break;
 
     case 6:
-      printf("Height of the tree: %d\n", findHeight(root));
+      printf("Height of the tree: %d\n", findHeightBST(root));
       break;
 
     case 7:
-      printf("Size of the tree: %d\n", treeSize(root));
+      printf("Size of the tree: %d\n", treeSizeBST(root));
       break;
 
     case 8:
       printf("In Order Traversal: ");
-      inOrderTraversal(root);
+      inOrderTraversalBST(root);
       printf("\n");
       break;
 
     case 9:
       printf("Pre-Order Traversal: ");
-      preOrderTraversal(root);
+      preOrderTraversalBST(root);
       printf("\n");
       break;
 
     case 10:
       printf("Post-Order Traversal: ");
-      postOrderTraversal(root);
+      postOrderTraversalBST(root);
       printf("\n");
       break;
 
     case 11:
-      print2D(root);
+      print2DBST(root);
       break;
 
     case 0:
