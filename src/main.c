@@ -74,7 +74,7 @@ int main() {
       printArray(arr, arr_size);
       cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
       printf("Time taken for Bubble Sort: %f seconds\n", cpu_time_used);
-      // Restore arr to its original values
+
       memcpy(arr, originalArr, arr_size * sizeof(int));
       break;
     case 5:
@@ -88,7 +88,7 @@ int main() {
       printArray(arr, arr_size);
       cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
       printf("Time taken for Selection Sort: %f seconds\n", cpu_time_used);
-      // Restore arr to its original values
+
       memcpy(arr, originalArr, arr_size * sizeof(int));
       break;
     case 6:
@@ -102,7 +102,7 @@ int main() {
       printArray(arr, arr_size);
       cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
       printf("Time taken for Insertion Sort: %f seconds\n", cpu_time_used);
-      // Restore arr to its original values
+
       memcpy(arr, originalArr, arr_size * sizeof(int));
       break;
     case 7:
@@ -116,18 +116,19 @@ int main() {
       printArray(arr, arr_size);
       cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
       printf("Time taken for Merge Sort: %f seconds\n", cpu_time_used);
-      // Restore arr to its original values
+
       memcpy(arr, originalArr, arr_size * sizeof(int));
       break;
     case 8:
       printf("Sorting (Shell)\n");
       printf("Unsorted Array: \n");
       printArray(arr, arr_size);
-      // Implement shell sort first!
-      // Calculate time here
+      start = clock();
+      shellSort(arr, arr_size);
+      end = clock();
       printf("Sorted Array: \n");
       printArray(arr, arr_size);
-      // Restore arr to its original values
+
       memcpy(arr, originalArr, arr_size * sizeof(int));
       break;
     case 9:
@@ -141,7 +142,7 @@ int main() {
       printArray(arr, arr_size);
       cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
       printf("Time taken for Quick Sort: %f seconds\n", cpu_time_used);
-      // Restore arr to its original values
+
       memcpy(arr, originalArr, arr_size * sizeof(int));
       break;
     case 0:
