@@ -6,8 +6,8 @@
 #define MAX_SIZE 100
 
 typedef struct {
-  int items[MAX_SIZE];
-  int count;
+    int items[MAX_SIZE];
+    int count;
 } Bag;
 
 void initBag(Bag *bag);
@@ -18,12 +18,10 @@ int removeFromBag(Bag *bag, int value);
 void saveBagState(Bag *bag, const char *filename);
 bool loadBagState(Bag *bag, const char *filename);
 
-
-
 // Structure for a node in the linked list
 struct Node {
-  int value;
-  struct Node *next;
+    int value;
+    struct Node *next;
 };
 
 // Function declarations
@@ -32,6 +30,6 @@ void appendNode(struct Node **head, int value);
 void printLinkedList(struct Node *head);
 
 typedef struct {
-  struct Node *head;
+    struct Node *head;
 } LinkedList;
 #endif

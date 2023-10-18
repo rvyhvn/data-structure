@@ -1,3 +1,5 @@
 {
-  "rpc.enabled": true
+	"rpc.enabled": true,
+	"prettier.useTabs": true,
+	"prettier.tabWidth": 4
 }

@@ -8,5 +8,3 @@ int pop(NodeStack **top);
 int peekStack(NodeStack *top);
 
 #endif // STACK_H
-
-
