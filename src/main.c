@@ -43,12 +43,17 @@ int main() {
 
     do {
 	printf("Main Menu:\n");
-	printf("1. Stack\t 2. Queue\t 3. Tree\n");
-	printf("4. Bubble Sort\t 5.Selection Sort\t 6. Insertion Sort\n");
+	printf("1. Stack\n");
+	printf("2. Queue\n");
+	printf("3. Tree\n");
+	printf("4. Bubble Sort\n");
+	printf("5. Selection Sort\n");
+	printf("6. Insertion Sort\n");
 	printf("7. Advanced Sorting (Merge)\n");
 	printf("8. Advanced Sorting (Shell)\n");
 	printf("9. Advanced Sorting (Quick Sort)\n");
 	printf("0. Quit\n");
+
 	printf("Option: ");
 	scanf("%d", &mainChoice);
 
