@@ -148,13 +148,14 @@ void bstreeMenu() {
     BSTreeNode *root = NULL;
     do {
 	printf("Binary Tree Menu:\n");
-	printf("1. Insert Node\t 2. Search Node\t 3. Delete Node\n");
-	printf("4. Find Minimum Value\t 5. Find Maximum Value\t 6. Height Of "
+	printf("1. Insert Node\t\t2. Search Node\t\t3. Delete Node\n");
+	printf("4. Find Minimum Value\t5. Find Maximum Value\t6. Height Of "
 	       "Tree\n");
-	printf("7. Size Of Tree\t 8. In Order Traversal\t 9. Pre-Order "
+	printf("7. Size Of Tree\t\t8. In Order Traversal\t9. Pre-Order "
 	       "Traversal\n");
-	printf("10. Post-Order Traversal\t 11. Visualize\t 0. Back To Main "
+	printf("10. Post-Order Traversal\t11. Visualize\t\t0. Back To Main "
 	       "Menu\n");
+
 	printf("Option: ");
 	scanf("%d", &treeChoice);
 
