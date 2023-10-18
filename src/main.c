@@ -1,8 +1,8 @@
+#include "../lib/bstree.h"
 #include "../lib/queue.h"
 #include "../lib/sorting.h"
 #include "../lib/stack.h"
 #include "../lib/structure.h"
-#include "../lib/tree.h"
 #include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>

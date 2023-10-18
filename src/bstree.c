@@ -1,4 +1,4 @@
-#include "../lib/tree.h"
+#include "../lib/bstree.h"
 #include <stdio.h>
 #include <stdlib.h>
 
