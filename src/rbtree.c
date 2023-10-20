@@ -138,137 +138,135 @@ RBTreeNode *insertRBTNode(RBTreeNode *root, int value) {
 }
 
 // Helper function to replace one subtree as a child of its parent
-// RBTreeNode *transplant(RBTreeNode *root, RBTreeNode *u, RBTreeNode *v) {
-//     if (u->parent == NULL)
-//         root = v;
-//     else if (u == u->parent->left)
-//         u->parent->left = v;
-//     else
-//         u->parent->right = v;
-//
-//     if (v != NULL)
-//         v->parent = u->parent;
-//
-//     return root;
-// }
-//
-// // Helper function to find the node with the minimum value in a subtree
-// RBTreeNode *minimumRBTNode(RBTreeNode *node) {
-//     while (node->left != NULL)
-//         node = node->left;
-//     return node;
-// }
-//
-// // Fix the Red-Black Tree after deletion
-// RBTreeNode *deleteFixup(RBTreeNode *root, RBTreeNode *x) {
-//     while (x != root && (x == NULL || x->color == BLACK)) {
-//         if (x == x->parent->left) {
-//             RBTreeNode *w = x->parent->right;
-//             if (w != NULL && w->color == RED) {
-//                 w->color = BLACK;
-//                 x->parent->color = RED;
-//                 root = leftRotate(root, x->parent);
-//                 w = x->parent->right;
-//             }
-//             if ((w->left == NULL || w->left->color == BLACK) &&
-//                 (w->right == NULL || w->right->color == BLACK)) {
-//                 if (w != NULL)
-//                     w->color = RED;
-//                 x = x->parent;
-//             } else {
-//                 if (w == NULL || w->right == NULL || w->right->color ==
-//                 BLACK) {
-//                     if (w->left != NULL)
-//                         w->left->color = BLACK;
-//                     if (w != NULL)
-//                         w->color = RED;
-//                     root = rightRotate(root, w);
-//                     w = x->parent->right;
-//                 }
-//                 if (w != NULL)
-//                     w->color = x->parent->color;
-//                 x->parent->color = BLACK;
-//                 if (w->right != NULL)
-//                     w->right->color = BLACK;
-//                 root = leftRotate(root, x->parent);
-//                 x = root;
-//             }
-//         } else {
-//             RBTreeNode *w = x->parent->left;
-//             if (w != NULL && w->color == RED) {
-//                 w->color = BLACK;
-//                 x->parent->color = RED;
-//                 root = rightRotate(root, x->parent);
-//                 w = x->parent->left;
-//             }
-//             if ((w->right == NULL || w->right->color == BLACK) &&
-//                 (w->left == NULL || w->left->color == BLACK)) {
-//                 if (w != NULL)
-//                     w->color = RED;
-//                 x = x->parent;
-//             } else {
-//                 if (w == NULL || w->left == NULL || w->left->color == BLACK)
-//                 {
-//                     if (w->right != NULL)
-//                         w->right->color = BLACK;
-//                     if (w != NULL)
-//                         w->color = RED;
-//                     root = leftRotate(root, w);
-//                     w = x->parent->left;
-//                 }
-//                 if (w != NULL)
-//                     w->color = x->parent->color;
-//                 x->parent->color = BLACK;
-//                 if (w->left != NULL)
-//                     w->left->color = BLACK;
-//                 root = rightRotate(root, x->parent);
-//                 x = root;
-//             }
-//         }
-//     }
-//     if (x != NULL)
-//         x->color = BLACK;
-//     return root;
-// }
-//
-// // Delete a node from the Red-Black Tree
-// RBTreeNode *deleteRBTNode(RBTreeNode *root, int value) {
-//     RBTreeNode *z = searchRBTNode(root, value);
-//     if (z == NULL)
-//         return root;
-//
-//     RBTreeNode *y = z;
-//     RBTreeNode *x;
-//     Color yOriginalColor = y->color;
-//
-//     if (z->left == NULL) {
-//         x = z->right;
-//         root = transplant(root, z, z->right);
-//     } else if (z->right == NULL) {
-//         x = z->left;
-//         root = transplant(root, z, z->left);
-//     } else {
-//         y = minimumRBTNode(z->right);
-//         yOriginalColor = y->color;
-//         x = y->right;
-//         if (y->parent == z)
-//             x->parent = y;
-//         else {
-//             root = transplant(root, y, y->right);
-//             y->right = z->right;
-//             y->right->parent = y;
-//         }
-//         root = transplant(root, z, y);
-//         y->left = z->left;
-//         y->left->parent = y;
-//         y->color = z->color;
-//     }
-//
-//     free(z);
-//     if (yOriginalColor == BLACK)
-//         root = deleteFixup(root, x);
-//     return root;
-// }
+RBTreeNode *transplant(RBTreeNode *root, RBTreeNode *u, RBTreeNode *v) {
+    if (u->parent == NULL)
+	root = v;
+    else if (u == u->parent->left)
+	u->parent->left = v;
+    else
+	u->parent->right = v;
+
+    if (v != NULL)
+	v->parent = u->parent;
+
+    return root;
+}
+
+// Helper function to find the node with the minimum value in a subtree
+RBTreeNode *minimumRBTNode(RBTreeNode *node) {
+    while (node->left != NULL)
+	node = node->left;
+    return node;
+}
+
+// Fix the Red-Black Tree after deletion
+RBTreeNode *deleteFixup(RBTreeNode *root, RBTreeNode *x) {
+    while (x != root && (x == NULL || x->color == BLACK)) {
+	if (x == x->parent->left) {
+	    RBTreeNode *w = x->parent->right;
+	    if (w != NULL && w->color == RED) {
+		w->color = BLACK;
+		x->parent->color = RED;
+		root = leftRotate(root, x->parent);
+		w = x->parent->right;
+	    }
+	    if ((w->left == NULL || w->left->color == BLACK) &&
+		(w->right == NULL || w->right->color == BLACK)) {
+		if (w != NULL)
+		    w->color = RED;
+		x = x->parent;
+	    } else {
+		if (w == NULL || w->right == NULL || w->right->color == BLACK) {
+		    if (w->left != NULL)
+			w->left->color = BLACK;
+		    if (w != NULL)
+			w->color = RED;
+		    root = rightRotate(root, w);
+		    w = x->parent->right;
+		}
+		if (w != NULL)
+		    w->color = x->parent->color;
+		x->parent->color = BLACK;
+		if (w->right != NULL)
+		    w->right->color = BLACK;
+		root = leftRotate(root, x->parent);
+		x = root;
+	    }
+	} else {
+	    RBTreeNode *w = x->parent->left;
+	    if (w != NULL && w->color == RED) {
+		w->color = BLACK;
+		x->parent->color = RED;
+		root = rightRotate(root, x->parent);
+		w = x->parent->left;
+	    }
+	    if ((w->right == NULL || w->right->color == BLACK) &&
+		(w->left == NULL || w->left->color == BLACK)) {
+		if (w != NULL)
+		    w->color = RED;
+		x = x->parent;
+	    } else {
+		if (w == NULL || w->left == NULL || w->left->color == BLACK) {
+		    if (w->right != NULL)
+			w->right->color = BLACK;
+		    if (w != NULL)
+			w->color = RED;
+		    root = leftRotate(root, w);
+		    w = x->parent->left;
+		}
+		if (w != NULL)
+		    w->color = x->parent->color;
+		x->parent->color = BLACK;
+		if (w->left != NULL)
+		    w->left->color = BLACK;
+		root = rightRotate(root, x->parent);
+		x = root;
+	    }
+	}
+    }
+    if (x != NULL)
+	x->color = BLACK;
+    return root;
+}
+
+// Delete a node from the Red-Black Tree
+RBTreeNode *deleteRBTNode(RBTreeNode *root, int value) {
+    RBTreeNode *z = searchRBTNode(root, value);
+    if (z == NULL)
+	return root;
+
+    RBTreeNode *y = z;
+    RBTreeNode *x;
+    Color yOriginalColor = y->color;
+
+    if (z->left == NULL) {
+	x = z->right;
+	root = transplant(root, z, z->right);
+    } else if (z->right == NULL) {
+	x = z->left;
+	root = transplant(root, z, z->left);
+    } else {
+	y = minimumRBTNode(z->right);
+	yOriginalColor = y->color;
+	x = y->right;
+	if (y->parent == z)
+	    x->parent = y;
+	else {
+	    root = transplant(root, y, y->right);
+	    y->right = z->right;
+	    y->right->parent = y;
+	}
+	root = transplant(root, z, y);
+	y->left = z->left;
+	y->left->parent = y;
+	y->color = z->color;
+    }
+
+    free(z);
+    if (yOriginalColor == BLACK)
+	root = deleteFixup(root, x);
+    return root;
+}
 
 RBTreeNode *searchRBTNode(RBTreeNode *root, int value) {
     RBTreeNode *current = root;
@@ -398,9 +396,9 @@ void rbtreeMenu() {
 	    break;
 
 	case 3:
-	    /* printf("Enter a value to delete: "); */
-	    /* scanf("%d", &value); */
-	    /* root = deleteRBTNode(root, value); */
+	    printf("Enter a value to delete: ");
+	    scanf("%d", &value);
+	    root = deleteRBTNode(root, value);
 	    break;
 
 	case 4:
