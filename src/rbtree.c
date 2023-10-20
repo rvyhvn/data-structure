@@ -1,6 +1,7 @@
 #include "../lib/rbtree.h"
 #include <stdio.h>
 #include <stdlib.h>
+
 typedef enum { RED, BLACK } Color;
 
 struct RBTreeNode {
@@ -11,13 +12,11 @@ struct RBTreeNode {
     struct RBTreeNode *right;
 };
 
-typedef struct RBTreeNode RBTreeNode;
-
 RBTreeNode *createRBTNode(int value) {
     RBTreeNode *newNode = (RBTreeNode *)malloc(sizeof(RBTreeNode));
     if (newNode == NULL) {
-        printf("Error: Memory allocation failed.\n");
-        return NULL;
+	printf("Error: Memory allocation failed.\n");
+	return NULL;
     }
 
     newNode->data = value;
@@ -32,15 +31,15 @@ RBTreeNode *leftRotate(RBTreeNode *root, RBTreeNode *x) {
     RBTreeNode *y = x->right;
     x->right = y->left;
     if (y->left != NULL) {
-        y->left->parent = x;
+	y->left->parent = x;
     }
     y->parent = x->parent;
     if (x->parent == NULL) {
-        root = y;
+	root = y;
     } else if (x == x->parent->left) {
-        x->parent->left = y;
+	x->parent->left = y;
     } else {
-        x->parent->right = y;
+	x->parent->right = y;
     }
     y->left = x;
     x->parent = y;
@@ -51,15 +50,15 @@ RBTreeNode *rightRotate(RBTreeNode *root, RBTreeNode *y) {
     RBTreeNode *x = y->left;
     y->left = x->right;
     if (x->right != NULL) {
-        x->right->parent = y;
+	x->right->parent = y;
     }
     x->parent = y->parent;
     if (y->parent == NULL) {
-        root = x;
+	root = x;
     } else if (y == y->parent->left) {
-        y->parent->left = x;
+	y->parent->left = x;
     } else {
-        y->parent->right = x;
+	y->parent->right = x;
     }
     x->right = y;
     y->parent = x;
@@ -69,39 +68,40 @@ RBTreeNode *rightRotate(RBTreeNode *root, RBTreeNode *y) {
 // Insertion Fix-Up to maintain Red-Black Tree Properties
 RBTreeNode *insertFixup(RBTreeNode *root, RBTreeNode *z) {
     while (z->parent != NULL && z->parent->color == RED) {
-        if (z->parent == z->parent->parent->left) {
-            RBTreeNode *y = z->parent->parent->right;
-            if (y != NULL && y->color == RED) {
-                z->parent->color = BLACK;
-                y->color = BLACK;
-                z->parent->parent->color = RED;
-                z = z->parent->parent;
-            } else {
-                if (z == z->parent->right) {
-                    z = z->parent;
-                    root = leftRotate(root, z);
-                }
-                z->parent->color = BLACK;
-                z->parent->parent->color = RED;
-                root = rightRotate(root, z->parent->parent);
-            }
-        } else {
-            RBTreeNode *y = z->parent->parent->left; // Get the left sibling
-                if (y != NULL && y->color == RED) {
-                    z->parent->color = BLACK;
-                    y->color = BLACK;
-                z->parent->parent->color = RED;
-                z = z->parent->parent;
-            } else {
-                if (z == z->parent->left) { // If z is on the left side of its parent
-                    z = z->parent;
-                    root = rightRotate(root, z);
-                }
-                z->parent->color = BLACK;
-                z->parent->parent->color = RED;
-                root = leftRotate(root, z->parent->parent);
-            }
-        }
+	if (z->parent == z->parent->parent->left) {
+	    RBTreeNode *y = z->parent->parent->right;
+	    if (y != NULL && y->color == RED) {
+		z->parent->color = BLACK;
+		y->color = BLACK;
+		z->parent->parent->color = RED;
+		z = z->parent->parent;
+	    } else {
+		if (z == z->parent->right) {
+		    z = z->parent;
+		    root = leftRotate(root, z);
+		}
+		z->parent->color = BLACK;
+		z->parent->parent->color = RED;
+		root = rightRotate(root, z->parent->parent);
+	    }
+	} else {
+	    RBTreeNode *y = z->parent->parent->left; // Get the left sibling
+	    if (y != NULL && y->color == RED) {
+		z->parent->color = BLACK;
+		y->color = BLACK;
+		z->parent->parent->color = RED;
+		z = z->parent->parent;
+	    } else {
+		if (z ==
+		    z->parent->left) { // If z is on the left side of its parent
+		    z = z->parent;
+		    root = rightRotate(root, z);
+		}
+		z->parent->color = BLACK;
+		z->parent->parent->color = RED;
+		root = leftRotate(root, z->parent->parent);
+	    }
+	}
     }
     root->color = BLACK;
     return root;
@@ -114,24 +114,24 @@ RBTreeNode *insertRBTNode(RBTreeNode *root, int value) {
     RBTreeNode *x = root;
 
     while (x != NULL) {
-        y = x;
-        if (z->data < x->data) {
-            x = x->left;
-        } else if (z->data > x->data)  {
-            x = x->right;
-        } else {
-          free(z);
-          return root;
-      }
+	y = x;
+	if (z->data < x->data) {
+	    x = x->left;
+	} else if (z->data > x->data) {
+	    x = x->right;
+	} else {
+	    free(z);
+	    return root;
+	}
     }
 
     z->parent = y;
     if (y == NULL) {
-        root = z;
+	root = z;
     } else if (z->data < y->data) {
-        y->left = z;
+	y->left = z;
     } else {
-        y->right = z;
+	y->right = z;
     }
 
     return insertFixup(root, z);
@@ -176,7 +176,8 @@ RBTreeNode *insertRBTNode(RBTreeNode *root, int value) {
 //                     w->color = RED;
 //                 x = x->parent;
 //             } else {
-//                 if (w == NULL || w->right == NULL || w->right->color == BLACK) {
+//                 if (w == NULL || w->right == NULL || w->right->color ==
+//                 BLACK) {
 //                     if (w->left != NULL)
 //                         w->left->color = BLACK;
 //                     if (w != NULL)
@@ -206,7 +207,8 @@ RBTreeNode *insertRBTNode(RBTreeNode *root, int value) {
 //                     w->color = RED;
 //                 x = x->parent;
 //             } else {
-//                 if (w == NULL || w->left == NULL || w->left->color == BLACK) {
+//                 if (w == NULL || w->left == NULL || w->left->color == BLACK)
+//                 {
 //                     if (w->right != NULL)
 //                         w->right->color = BLACK;
 //                     if (w != NULL)
@@ -271,16 +273,14 @@ RBTreeNode *insertRBTNode(RBTreeNode *root, int value) {
 RBTreeNode *searchRBTNode(RBTreeNode *root, int value) {
     RBTreeNode *current = root;
     while (current != NULL && current->data != value) {
-        if (value < current->data) {
-            current = current->left;
-        } else {
-            current = current->right;
-        }
+	if (value < current->data) {
+	    current = current->left;
+	} else {
+	    current = current->right;
+	}
     }
     return current;
 }
-
-
 
 int findMinRBT(RBTreeNode *root) {
     while (root->left != NULL) {
@@ -336,10 +336,9 @@ void postOrderTraversalRBT(RBTreeNode *root) {
     }
 }
 
-
 void print2DUtilRBT(RBTreeNode *root, int space) {
     if (root == NULL)
-        return;
+	return;
 
     space += COUNT;
 
@@ -347,28 +346,28 @@ void print2DUtilRBT(RBTreeNode *root, int space) {
 
     printf("\n");
     for (int i = COUNT; i < space; i++)
-        printf(" ");
+	printf(" ");
 
     // Set text color based on the node's color
     if (root->color == RED) {
-        printf("\033[31m");  // Set text color to red
-    } 
-  
-    printf("%d\x1b[0m\n", root->data);  // Reset text color after printing the value
+	printf("\033[31m"); // Set text color to red
+    }
+
+    printf("%d\x1b[0m\n",
+	   root->data); // Reset text color after printing the value
 
     print2DUtilRBT(root->left, space);
 }
 
-void print2DRBT(RBTreeNode *root) {
-    print2DUtilRBT(root, 0);
-}
+void print2DRBT(RBTreeNode *root) { print2DUtilRBT(root, 0); }
 
 void rbtreeMenu() {
     int treeChoice;
     RBTreeNode *root = NULL;
     do {
 	printf("Red Black Tree Menu:\n");
-	printf("1. Insert Node\t\t2. Search Node\t\t3. Delete Node\n");
+	printf("1. Insert Node\t\t2. Search Node\t\t3. Delete Node (not "
+	       "available yet)\n");
 	printf("4. Find Minimum Value\t5. Find Maximum Value\t6. Height Of "
 	       "Tree\n");
 	printf("7. Size Of Tree\t\t8. In Order Traversal\t9. Pre-Order "
@@ -399,9 +398,9 @@ void rbtreeMenu() {
 	    break;
 
 	case 3:
-	    printf("Enter a value to delete: ");
-	    scanf("%d", &value);
-	    root = deleteRBTNode(root, value);
+	    /* printf("Enter a value to delete: "); */
+	    /* scanf("%d", &value); */
+	    /* root = deleteRBTNode(root, value); */
 	    break;
 
 	case 4:
