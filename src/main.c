@@ -1,4 +1,5 @@
 #include "../lib/bstree.h"
+#include "../lib/rbtree.h"
 #include "../lib/queue.h"
 #include "../lib/sorting.h"
 #include "../lib/stack.h"
@@ -22,6 +23,7 @@ void printArray(int arr[], int size) {
 void stackMenu();
 void queueMenu();
 void bstreeMenu();
+void rbtreeMenu();
 
 int main() {
     int originalArr[] = {
@@ -43,16 +45,17 @@ int main() {
 
     do {
 	printf("Main Menu:\n");
-	printf("1. Stack\n");
-	printf("2. Queue\n");
-	printf("3. Tree\n");
-	printf("4. Bubble Sort\n");
-	printf("5. Selection Sort\n");
-	printf("6. Insertion Sort\n");
-	printf("7. Advanced Sorting (Merge)\n");
-	printf("8. Advanced Sorting (Shell)\n");
-	printf("9. Advanced Sorting (Quick Sort)\n");
-	printf("0. Quit\n");
+	printf("1.  Stack\n");
+	printf("2.  Queue\n");
+	printf("3.  BSTree\n");
+  printf("11. RBTree\n");
+	printf("4.  Bubble Sort\n");
+	printf("5.  Selection Sort\n");
+	printf("6.  Insertion Sort\n");
+	printf("7.  Advanced Sorting (Merge)\n");
+	printf("8.  Advanced Sorting (Shell)\n");
+	printf("9.  Advanced Sorting (Quick Sort)\n");
+	printf("0.  Quit\n");
 
 	printf("Option: ");
 	scanf("%d", &mainChoice);
@@ -67,8 +70,12 @@ int main() {
 	    queueMenu();
 	    break;
 	case 3:
-	    printf("Data Structure (Tree)\n");
+	    printf("Data Structure (BSTree)\n");
 	    bstreeMenu();
+	    break;
+  case 11:
+	    printf("Data Structure (RBTree)\n");
+	    rbtreeMenu();
 	    break;
 	case 4:
 	    printf("Sorting (Bubble)\n");
