@@ -2,451 +2,492 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef enum { RED, BLACK } Color;
-
-struct RBTreeNode {
-    int data;
-    Color color;
-    struct RBTreeNode *parent;
-    struct RBTreeNode *left;
-    struct RBTreeNode *right;
+enum nodeColor {
+  RED,
+  BLACK
 };
 
-RBTreeNode *createRBTNode(int value) {
-    RBTreeNode *newNode = (RBTreeNode *)malloc(sizeof(RBTreeNode));
-    if (newNode == NULL) {
-	printf("Error: Memory allocation failed.\n");
-	return NULL;
-    }
+struct RBTreeNode {
+  int value, color;
+  struct RBTreeNode *link[2];
+};
 
-    newNode->data = value;
-    newNode->color = RED; // New nodes are initially red
-    newNode->left = NULL;
-    newNode->right = NULL;
+struct RBTreeNode *root = NULL;
 
-    return newNode;
+// Create a red-black tree node
+struct RBTreeNode *createNode(int value) {
+  struct RBTreeNode *newnode;
+  newnode = (struct RBTreeNode *)malloc(sizeof(struct RBTreeNode));
+  newnode->value = value;
+  newnode->color = RED;
+  newnode->link[0] = newnode->link[1] = NULL;
+  return newnode;
 }
 
-RBTreeNode *leftRotate(RBTreeNode *root, RBTreeNode *x) {
-    RBTreeNode *y = x->right;
-    x->right = y->left;
-    if (y->left != NULL) {
-	y->left->parent = x;
+// Insert a node into the red-black tree
+void insertRBTNode(int value) {
+  // (Same as your 'insertion' function)
+  struct RBTreeNode *stack[98], *ptr, *newnode, *xPtr, *yPtr;
+  int dir[98], ht = 0, index;
+  ptr = root;
+  if (!root) {
+    root = createNode(value);
+    return;
+  }
+
+  stack[ht] = root;
+  dir[ht++] = 0;
+  while (ptr != NULL) {
+    if (ptr->value == value) {
+      printf("Duplicates Not Allowed!!\n");
+      return;
     }
-    y->parent = x->parent;
-    if (x->parent == NULL) {
-	root = y;
-    } else if (x == x->parent->left) {
-	x->parent->left = y;
+    index = (value - ptr->value) > 0 ? 1 : 0;
+    stack[ht] = ptr;
+    ptr = ptr->link[index];
+    dir[ht++] = index;
+  }
+  stack[ht - 1]->link[index] = newnode = createNode(value);
+  while ((ht >= 3) && (stack[ht - 1]->color == RED)) {
+    if (dir[ht - 2] == 0) {
+      yPtr = stack[ht - 2]->link[1];
+      if (yPtr != NULL && yPtr->color == RED) {
+        stack[ht - 2]->color = RED;
+        stack[ht - 1]->color = yPtr->color = BLACK;
+        ht = ht - 2;
+      } else {
+        if (dir[ht - 1] == 0) {
+          yPtr = stack[ht - 1];
+        } else {
+          xPtr = stack[ht - 1];
+          yPtr = xPtr->link[1];
+          xPtr->link[1] = yPtr->link[0];
+          yPtr->link[0] = xPtr;
+          stack[ht - 2]->link[0] = yPtr;
+        }
+        xPtr = stack[ht - 2];
+        xPtr->color = RED;
+        yPtr->color = BLACK;
+        xPtr->link[0] = yPtr->link[1];
+        yPtr->link[1] = xPtr;
+        if (xPtr == root) {
+          root = yPtr;
+        } else {
+          stack[ht - 3]->link[dir[ht - 3]] = yPtr;
+        }
+        break;
+      }
     } else {
-	x->parent->right = y;
+      yPtr = stack[ht - 2]->link[0];
+      if ((yPtr != NULL) && (yPtr->color == RED)) {
+        stack[ht - 2]->color = RED;
+        stack[ht - 1]->color = yPtr->color = BLACK;
+        ht = ht - 2;
+      } else {
+        if (dir[ht - 1] == 1) {
+          yPtr = stack[ht - 1];
+        } else {
+          xPtr = stack[ht - 1];
+          yPtr = xPtr->link[0];
+          xPtr->link[0] = yPtr->link[1];
+          yPtr->link[1] = xPtr;
+          stack[ht - 2]->link[1] = yPtr;
+        }
+        xPtr = stack[ht - 2];
+        yPtr->color = BLACK;
+        xPtr->color = RED;
+        xPtr->link[1] = yPtr->link[0];
+        yPtr->link[0] = xPtr;
+        if (xPtr == root) {
+          root = yPtr;
+        } else {
+          stack[ht - 3]->link[dir[ht - 3]] = yPtr;
+        }
+        break;
+      }
     }
-    y->left = x;
-    x->parent = y;
-    return root;
+  }
+  root->color = BLACK;
 }
 
-RBTreeNode *rightRotate(RBTreeNode *root, RBTreeNode *y) {
-    RBTreeNode *x = y->left;
-    y->left = x->right;
-    if (x->right != NULL) {
-	x->right->parent = y;
-    }
-    x->parent = y->parent;
-    if (y->parent == NULL) {
-	root = x;
-    } else if (y == y->parent->left) {
-	y->parent->left = x;
+// Search a node in the red-black tree
+struct RBTreeNode* searchRBTNode(int value) {
+  struct RBTreeNode *current = root;
+  while (current != NULL) {
+    if (current->value == value) {
+      return current;
+    } else if (value < current->value) {
+      current = current->link[0];
     } else {
-	y->parent->right = x;
+      current = current->link[1];
     }
-    x->right = y;
-    y->parent = x;
-    return root;
+  }
+  return NULL;
 }
 
-// Insertion Fix-Up to maintain Red-Black Tree Properties
-RBTreeNode *insertFixup(RBTreeNode *root, RBTreeNode *z) {
-    while (z->parent != NULL && z->parent->color == RED) {
-	if (z->parent == z->parent->parent->left) {
-	    RBTreeNode *y = z->parent->parent->right;
-	    if (y != NULL && y->color == RED) {
-		z->parent->color = BLACK;
-		y->color = BLACK;
-		z->parent->parent->color = RED;
-		z = z->parent->parent;
-	    } else {
-		if (z == z->parent->right) {
-		    z = z->parent;
-		    root = leftRotate(root, z);
-		}
-		z->parent->color = BLACK;
-		z->parent->parent->color = RED;
-		root = rightRotate(root, z->parent->parent);
-	    }
-	} else {
-	    RBTreeNode *y = z->parent->parent->left; // Get the left sibling
-	    if (y != NULL && y->color == RED) {
-		z->parent->color = BLACK;
-		y->color = BLACK;
-		z->parent->parent->color = RED;
-		z = z->parent->parent;
-	    } else {
-		if (z ==
-		    z->parent->left) { // If z is on the left side of its parent
-		    z = z->parent;
-		    root = rightRotate(root, z);
-		}
-		z->parent->color = BLACK;
-		z->parent->parent->color = RED;
-		root = leftRotate(root, z->parent->parent);
-	    }
-	}
-    }
-    root->color = BLACK;
-    return root;
-}
+// Delete a node from the red-black tree
+void deleteRBTNode(int value) {
+  // (Same as your 'deletion' function)
+struct RBTreeNode *stack[98], *ptr, *xPtr, *yPtr;
+  struct RBTreeNode *pPtr, *qPtr, *rPtr;
+  int dir[98], ht = 0, diff, i;
+  enum nodeColor color;
 
-// Insert a node into the Red-Black Tree
-RBTreeNode *insertRBTNode(RBTreeNode *root, int value) {
-    RBTreeNode *z = createRBTNode(value);
-    RBTreeNode *y = NULL;
-    RBTreeNode *x = root;
+  if (!root) {
+    printf("Tree not available\n");
+    return;
+  }
 
-    while (x != NULL) {
-	y = x;
-	if (z->data < x->data) {
-	    x = x->left;
-	} else if (z->data > x->data) {
-	    x = x->right;
-	} else {
-	    free(z);
-	    return root;
-	}
-    }
+  ptr = root;
+  while (ptr != NULL) {
+    if ((value - ptr->value) == 0)
+      break;
+    diff = (value - ptr->value) > 0 ? 1 : 0;
+    stack[ht] = ptr;
+    dir[ht++] = diff;
+    ptr = ptr->link[diff];
+  }
 
-    z->parent = y;
-    if (y == NULL) {
-	root = z;
-    } else if (z->data < y->data) {
-	y->left = z;
+  if (ptr->link[1] == NULL) {
+    if ((ptr == root) && (ptr->link[0] == NULL)) {
+      free(ptr);
+      root = NULL;
+    } else if (ptr == root) {
+      root = ptr->link[0];
+      free(ptr);
     } else {
-	y->right = z;
+      stack[ht - 1]->link[dir[ht - 1]] = ptr->link[0];
     }
+  } else {
+    xPtr = ptr->link[1];
+    if (xPtr->link[0] == NULL) {
+      xPtr->link[0] = ptr->link[0];
+      color = xPtr->color;
+      xPtr->color = ptr->color;
+      ptr->color = color;
 
-    return insertFixup(root, z);
+      if (ptr == root) {
+        root = xPtr;
+      } else {
+        stack[ht - 1]->link[dir[ht - 1]] = xPtr;
+      }
+
+      dir[ht] = 1;
+      stack[ht++] = xPtr;
+    } else {
+      i = ht++;
+      while (1) {
+        dir[ht] = 0;
+        stack[ht++] = xPtr;
+        yPtr = xPtr->link[0];
+        if (!yPtr->link[0])
+          break;
+        xPtr = yPtr;
+      }
+
+      dir[i] = 1;
+      stack[i] = yPtr;
+      if (i > 0)
+        stack[i - 1]->link[dir[i - 1]] = yPtr;
+
+      yPtr->link[0] = ptr->link[0];
+
+      xPtr->link[0] = yPtr->link[1];
+      yPtr->link[1] = ptr->link[1];
+
+      if (ptr == root) {
+        root = yPtr;
+      }
+
+      color = yPtr->color;
+      yPtr->color = ptr->color;
+      ptr->color = color;
+    }
+  }
+
+  if (ht < 1)
+    return;
+
+  if (ptr->color == BLACK) {
+    while (1) {
+      pPtr = stack[ht - 1]->link[dir[ht - 1]];
+      if (pPtr && pPtr->color == RED) {
+        pPtr->color = BLACK;
+        break;
+      }
+
+      if (ht < 2)
+        break;
+
+      if (dir[ht - 2] == 0) {
+        rPtr = stack[ht - 1]->link[1];
+
+        if (!rPtr)
+          break;
+
+        if (rPtr->color == RED) {
+          stack[ht - 1]->color = RED;
+          rPtr->color = BLACK;
+          stack[ht - 1]->link[1] = rPtr->link[0];
+          rPtr->link[0] = stack[ht - 1];
+
+          if (stack[ht - 1] == root) {
+            root = rPtr;
+          } else {
+            stack[ht - 2]->link[dir[ht - 2]] = rPtr;
+          }
+          dir[ht] = 0;
+          stack[ht] = stack[ht - 1];
+          stack[ht - 1] = rPtr;
+          ht++;
+
+          rPtr = stack[ht - 1]->link[1];
+        }
+
+        if ((!rPtr->link[0] || rPtr->link[0]->color == BLACK) &&
+          (!rPtr->link[1] || rPtr->link[1]->color == BLACK)) {
+          rPtr->color = RED;
+        } else {
+          if (!rPtr->link[1] || rPtr->link[1]->color == BLACK) {
+            qPtr = rPtr->link[0];
+            rPtr->color = RED;
+            qPtr->color = BLACK;
+            rPtr->link[0] = qPtr->link[1];
+            qPtr->link[1] = rPtr;
+            rPtr = stack[ht - 1]->link[1] = qPtr;
+          }
+          rPtr->color = stack[ht - 1]->color;
+          stack[ht - 1]->color = BLACK;
+          rPtr->link[1]->color = BLACK;
+          stack[ht - 1]->link[1] = rPtr->link[0];
+          rPtr->link[0] = stack[ht - 1];
+          if (stack[ht - 1] == root) {
+            root = rPtr;
+          } else {
+            stack[ht - 2]->link[dir[ht - 2]] = rPtr;
+          }
+          break;
+        }
+      } else {
+        rPtr = stack[ht - 1]->link[0];
+        if (!rPtr)
+          break;
+
+        if (rPtr->color == RED) {
+          stack[ht - 1]->color = RED;
+          rPtr->color = BLACK;
+          stack[ht - 1]->link[0] = rPtr->link[1];
+          rPtr->link[1] = stack[ht - 1];
+
+          if (stack[ht - 1] == root) {
+            root = rPtr;
+          } else {
+            stack[ht - 2]->link[dir[ht - 2]] = rPtr;
+          }
+          dir[ht] = 1;
+          stack[ht] = stack[ht - 1];
+          stack[ht - 1] = rPtr;
+          ht++;
+
+          rPtr = stack[ht - 1]->link[0];
+        }
+        if ((!rPtr->link[0] || rPtr->link[0]->color == BLACK) &&
+          (!rPtr->link[1] || rPtr->link[1]->color == BLACK)) {
+          rPtr->color = RED;
+        } else {
+          if (!rPtr->link[0] || rPtr->link[0]->color == BLACK) {
+            qPtr = rPtr->link[1];
+            rPtr->color = RED;
+            qPtr->color = BLACK;
+            rPtr->link[1] = qPtr->link[0];
+            qPtr->link[0] = rPtr;
+            rPtr = stack[ht - 1]->link[0] = qPtr;
+          }
+          rPtr->color = stack[ht - 1]->color;
+          stack[ht - 1]->color = BLACK;
+          rPtr->link[0]->color = BLACK;
+          stack[ht - 1]->link[0] = rPtr->link[1];
+          rPtr->link[1] = stack[ht - 1];
+          if (stack[ht - 1] == root) {
+            root = rPtr;
+          } else {
+            stack[ht - 2]->link[dir[ht - 2]] = rPtr;
+          }
+          break;
+        }
+      }
+      ht--;
+    }
+  }
 }
 
-// Helper function to replace one subtree as a child of its parent
-// RBTreeNode *transplant(RBTreeNode *root, RBTreeNode *u, RBTreeNode *v) {
-//     if (u->parent == NULL)
-//         root = v;
-//     else if (u == u->parent->left)
-//         u->parent->left = v;
-//     else
-//         u->parent->right = v;
-//
-//     if (v != NULL)
-//         v->parent = u->parent;
-//
-//     return root;
-// }
-//
-// // Helper function to find the node with the minimum value in a subtree
-// RBTreeNode *minimumRBTNode(RBTreeNode *node) {
-//     while (node->left != NULL)
-//         node = node->left;
-//     return node;
-// }
-//
-// // Fix the Red-Black Tree after deletion
-// RBTreeNode *deleteFixup(RBTreeNode *root, RBTreeNode *x) {
-//     while (x != root && (x == NULL || x->color == BLACK)) {
-//         if (x == x->parent->left) {
-//             RBTreeNode *w = x->parent->right;
-//             if (w != NULL && w->color == RED) {
-//                 w->color = BLACK;
-//                 x->parent->color = RED;
-//                 root = leftRotate(root, x->parent);
-//                 w = x->parent->right;
-//             }
-//             if ((w->left == NULL || w->left->color == BLACK) &&
-//                 (w->right == NULL || w->right->color == BLACK)) {
-//                 if (w != NULL)
-//                     w->color = RED;
-//                 x = x->parent;
-//             } else {
-//                 if (w == NULL || w->right == NULL || w->right->color ==
-//                 BLACK) {
-//                     if (w->left != NULL)
-//                         w->left->color = BLACK;
-//                     if (w != NULL)
-//                         w->color = RED;
-//                     root = rightRotate(root, w);
-//                     w = x->parent->right;
-//                 }
-//                 if (w != NULL)
-//                     w->color = x->parent->color;
-//                 x->parent->color = BLACK;
-//                 if (w->right != NULL)
-//                     w->right->color = BLACK;
-//                 root = leftRotate(root, x->parent);
-//                 x = root;
-//             }
-//         } else {
-//             RBTreeNode *w = x->parent->left;
-//             if (w != NULL && w->color == RED) {
-//                 w->color = BLACK;
-//                 x->parent->color = RED;
-//                 root = rightRotate(root, x->parent);
-//                 w = x->parent->left;
-//             }
-//             if ((w->right == NULL || w->right->color == BLACK) &&
-//                 (w->left == NULL || w->left->color == BLACK)) {
-//                 if (w != NULL)
-//                     w->color = RED;
-//                 x = x->parent;
-//             } else {
-//                 if (w == NULL || w->left == NULL || w->left->color == BLACK)
-//                 {
-//                     if (w->right != NULL)
-//                         w->right->color = BLACK;
-//                     if (w != NULL)
-//                         w->color = RED;
-//                     root = leftRotate(root, w);
-//                     w = x->parent->left;
-//                 }
-//                 if (w != NULL)
-//                     w->color = x->parent->color;
-//                 x->parent->color = BLACK;
-//                 if (w->left != NULL)
-//                     w->left->color = BLACK;
-//                 root = rightRotate(root, x->parent);
-//                 x = root;
-//             }
-//         }
-//     }
-//     if (x != NULL)
-//         x->color = BLACK;
-//     return root;
-// }
-//
-// // Delete a node from the Red-Black Tree
-// RBTreeNode *deleteRBTNode(RBTreeNode *root, int value) {
-//     RBTreeNode *z = searchRBTNode(root, value);
-//     if (z == NULL)
-//         return root;
-//
-//     RBTreeNode *y = z;
-//     RBTreeNode *x;
-//     Color yOriginalColor = y->color;
-//
-//     if (z->left == NULL) {
-//         x = z->right;
-//         root = transplant(root, z, z->right);
-//     } else if (z->right == NULL) {
-//         x = z->left;
-//         root = transplant(root, z, z->left);
-//     } else {
-//         y = minimumRBTNode(z->right);
-//         yOriginalColor = y->color;
-//         x = y->right;
-//         if (y->parent == z)
-//             x->parent = y;
-//         else {
-//             root = transplant(root, y, y->right);
-//             y->right = z->right;
-//             y->right->parent = y;
-//         }
-//         root = transplant(root, z, y);
-//         y->left = z->left;
-//         y->left->parent = y;
-//         y->color = z->color;
-//     }
-//
-//     free(z);
-//     if (yOriginalColor == BLACK)
-//         root = deleteFixup(root, x);
-//     return root;
-// }
-
-RBTreeNode *searchRBTNode(RBTreeNode *root, int value) {
-    RBTreeNode *current = root;
-    while (current != NULL && current->data != value) {
-	if (value < current->data) {
-	    current = current->left;
-	} else {
-	    current = current->right;
-	}
-    }
-    return current;
+// Find the minimum value node in the red-black tree
+struct RBTreeNode* findMinRBT() {
+  struct RBTreeNode *current = root;
+  if (current == NULL) {
+    return NULL;
+  }
+  while (current->link[0] != NULL) {
+    current = current->link[0];
+  }
+  return current;
 }
 
-int findMinRBT(RBTreeNode *root) {
-    while (root->left != NULL) {
-	root = root->left;
-    }
-    return root->data;
+// Find the maximum value node in the red-black tree
+struct RBTreeNode* findMaxRBT() {
+  struct RBTreeNode *current = root;
+  if (current == NULL) {
+    return NULL;
+  }
+  while (current->link[1] != NULL) {
+    current = current->link[1];
+  }
+  return current;
 }
 
-int findMaxRBT(RBTreeNode *root) {
-    while (root->right != NULL) {
-	root = root->right;
-    }
-    return root->data;
+// Find the height of the red-black tree
+int findHeightRBT(RBTreeNode* node) {
+  if (node == NULL) return -1;
+  int leftHeight = findHeightRBT(node->link[0]);
+  int rightHeight = findHeightRBT(node->link[1]);
+  return 1 + (leftHeight > rightHeight ? leftHeight : rightHeight);
 }
 
-int findHeightRBT(RBTreeNode *root) {
-    if (root == NULL) {
-	return -1;
-    }
-    int leftHeight = findHeightRBT(root->left);
-    int rightHeight = findHeightRBT(root->right);
-    return (leftHeight > rightHeight ? leftHeight : rightHeight) + 1;
+// Find the size of the red-black tree (number of nodes)
+int treeSizeRBT(struct RBTreeNode* node) {
+  if (node == NULL) return 0;
+  return 1 + treeSizeRBT(node->link[0]) + treeSizeRBT(node->link[1]);
 }
 
-int treeSizeRBT(RBTreeNode *root) {
-    if (root == NULL) {
-	return 0;
-    }
-    return 1 + treeSizeRBT(root->left) + treeSizeRBT(root->right);
+// In-order traversal of the red-black tree
+void inOrderTraversalRBT(struct RBTreeNode* node) {
+  if (node) {
+    inOrderTraversalRBT(node->link[0]);
+    printf("%d  ", node->value);
+    inOrderTraversalRBT(node->link[1]);
+  }
 }
 
-void inOrderTraversalRBT(RBTreeNode *root) {
-    if (root != NULL) {
-	inOrderTraversalRBT(root->left);
-	printf("%d ", root->data);
-	inOrderTraversalRBT(root->right);
-    }
+// Pre-order traversal of the red-black tree
+void preOrderTraversalRBT(struct RBTreeNode* node) {
+  if (node) {
+    printf("%d  ", node->value);
+    preOrderTraversalRBT(node->link[0]);
+    preOrderTraversalRBT(node->link[1]);
+  }
 }
 
-void preOrderTraversalRBT(RBTreeNode *root) {
-    if (root != NULL) {
-	printf("%d ", root->data);
-	preOrderTraversalRBT(root->left);
-	preOrderTraversalRBT(root->right);
-    }
-}
-
-void postOrderTraversalRBT(RBTreeNode *root) {
-    if (root != NULL) {
-	postOrderTraversalRBT(root->left);
-	postOrderTraversalRBT(root->right);
-	printf("%d ", root->data);
-    }
+// Post-order traversal of the red-black tree
+void postOrderTraversalRBT(struct RBTreeNode* node) {
+  if (node) {
+    postOrderTraversalRBT(node->link[0]);
+    postOrderTraversalRBT(node->link[1]);
+    printf("%d  ", node->value);
+  }
 }
 
 void print2DUtilRBT(RBTreeNode *root, int space) {
     if (root == NULL)
-	return;
+        return;
 
     space += COUNT;
 
-    print2DUtilRBT(root->right, space);
+    print2DUtilRBT(root->link[1], space); // Print right subtree
 
     printf("\n");
     for (int i = COUNT; i < space; i++)
-	printf(" ");
+        printf(" ");
 
-    // Set text color based on the node's color
+    // Display the node's value and color (RED or BLACK)
     if (root->color == RED) {
-	printf("\033[31m"); // Set text color to red
+        printf("\033[31m%d (R)\033[0m\n", root->value); // Print in red color for red nodes
+    } else {
+        printf("\033[30m%d (B)\033[0m\n", root->value); // Print in black color for black nodes
     }
 
-    printf("%d\x1b[0m\n",
-	   root->data); // Reset text color after printing the value
-
-    print2DUtilRBT(root->left, space);
+    print2DUtilRBT(root->link[0], space); // Print left subtree
 }
 
-void print2DRBT(RBTreeNode *root) { print2DUtilRBT(root, 0); }
-
-void rbtreeMenu() {
-    int treeChoice;
-    RBTreeNode *root = NULL;
-    do {
-	printf("Red Black Tree Menu:\n");
-	printf("1. Insert Node\t\t2. Search Node\t\t3. Delete Node (not "
-	       "available yet)\n");
-	printf("4. Find Minimum Value\t5. Find Maximum Value\t6. Height Of "
-	       "Tree\n");
-	printf("7. Size Of Tree\t\t8. In Order Traversal\t9. Pre-Order "
-	       "Traversal\n");
-	printf("10. Post-Order Traversal\t11. Visualize\t\t0. Back To Main "
-	       "Menu\n");
-
-	printf("Option: ");
-	scanf("%d", &treeChoice);
-
-	switch (treeChoice) {
-	case 1:
-	    printf("Enter a value to insert: ");
-	    int value;
-	    scanf("%d", &value);
-	    root = insertRBTNode(root, value);
-	    break;
-
-	case 2:
-	    printf("Enter a value to search: ");
-	    scanf("%d", &value);
-	    RBTreeNode *result = searchRBTNode(root, value);
-	    if (result != NULL) {
-		printf("Value found in the tree.\n");
-	    } else {
-		printf("Value not found in the tree.\n");
-	    }
-	    break;
-
-	case 3:
-	    /* printf("Enter a value to delete: "); */
-	    /* scanf("%d", &value); */
-	    /* root = deleteRBTNode(root, value); */
-	    break;
-
-	case 4:
-	    printf("Minimum value in the tree: %d\n", findMinRBT(root));
-	    break;
-
-	case 5:
-	    printf("Maximum value in the tree: %d\n", findMaxRBT(root));
-	    break;
-
-	case 6:
-	    printf("Height of the tree: %d\n", findHeightRBT(root));
-	    break;
-
-	case 7:
-	    printf("Size of the tree: %d\n", treeSizeRBT(root));
-	    break;
-
-	case 8:
-	    printf("In Order Traversal: ");
-	    inOrderTraversalRBT(root);
-	    printf("\n");
-	    break;
-
-	case 9:
-	    printf("Pre-Order Traversal: ");
-	    preOrderTraversalRBT(root);
-	    printf("\n");
-	    break;
-
-	case 10:
-	    printf("Post-Order Traversal: ");
-	    postOrderTraversalRBT(root);
-	    printf("\n");
-	    break;
-
-	case 11:
-	    print2DRBT(root);
-	    break;
-
-	case 0:
-	    break;
-
-	default:
-	    printf("Invalid menu choice. Please try again.\n");
-	    break;
-	}
-    } while (treeChoice != 0);
+void print2DRBT(RBTreeNode *root) {
+    print2DUtilRBT(root, 0);
 }
+
+// Driver code
+int rbtreeMenu() {
+  int ch, value;
+  struct RBTreeNode* foundNode;
+
+  while (1) {
+    printf("1. Insertion\t2. Deletion\t3. Search\n");
+    printf("4. Find Min\t5. Find Max\t6. Height\n");
+    printf("7. Tree Size\t8. In-order\t9. Pre-order\t10. Post-order\n");
+    printf("11. Exit\n");
+    printf("Enter your choice: ");
+    scanf("%d", &ch);
+
+    switch (ch) {
+      case 1:
+        printf("Enter the element to insert: ");
+        scanf("%d", &value);
+        insertRBTNode(value);
+        break;
+      case 2:
+        printf("Enter the element to delete: ");
+        scanf("%d", &value);
+        deleteRBTNode(value);
+        break;
+      case 3:
+        printf("Enter the element to search: ");
+        scanf("%d", &value);
+        foundNode = searchRBTNode(value);
+        if (foundNode)
+          printf("Element found in the tree.\n");
+        else
+          printf("Element not found in the tree.\n");
+        break;
+      case 4:
+        foundNode = findMinRBT();
+        if (foundNode)
+          printf("Minimum element in the tree: %d\n", foundNode->value);
+        else
+          printf("Tree is empty.\n");
+        break;
+      case 5:
+        foundNode = findMaxRBT();
+        if (foundNode)
+          printf("Maximum element in the tree: %d\n", foundNode->value);
+        else
+          printf("Tree is empty.\n");
+        break;
+      case 6:
+        printf("Height of the tree: %d\n", findHeightRBT(root));
+        break;
+      case 7:
+        printf("Size of the tree: %d\n", treeSizeRBT(root));
+        break;
+      case 8:
+        printf("In-order traversal: ");
+        inOrderTraversalRBT(root);
+        printf("\n");
+        break;
+      case 9:
+        printf("Pre-order traversal: ");
+        preOrderTraversalRBT(root);
+        printf("\n");
+        break;
+      case 10:
+        printf("Post-order traversal: ");
+        postOrderTraversalRBT(root);
+        printf("\n");
+        break;
+      case 11:
+        exit(0);
+      default:
+        printf("Invalid choice.\n");
+        break;
+    }
+    printf("\n");
+  }
+  return 0;
+}
+
