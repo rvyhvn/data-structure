@@ -4,11 +4,11 @@
 #define COUNT 5
 typedef struct RBTreeNode RBTreeNode;
 
-void insertRBTNode(int value);
-RBTreeNode *searchRBTNode(int value);
-void deleteRBTNode(int value);
-RBTreeNode *findMinRBT();
-RBTreeNode *findMaxRBT();
+void insertRBTNode(int value, RBTreeNode **root);
+RBTreeNode *searchRBTNode(int value, RBTreeNode *root);
+void deleteRBTNode(int value, RBTreeNode **root);
+RBTreeNode *findMinRBT(RBTreeNode *root);
+RBTreeNode *findMaxRBT(RBTreeNode *root);
 int findHeightRBT(RBTreeNode *root);
 int treeSizeRBT(RBTreeNode *root);
 void inOrderTraversalRBT(RBTreeNode *root);
