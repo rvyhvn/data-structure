@@ -48,7 +48,7 @@ int main() {
 	printf("1. Stack\n");
 	printf("2. Queue\n");
 	printf("3. Binary Search Tree\n");
-	printf("4. Red-Black Tree (Development)\n");
+	printf("4. Red-Black Tree\n");
 	printf("5. Hash Table (Not Available Yet)\n");
 	printf("6. Bubble Sort\n");
 	printf("7. Selection Sort\n");
