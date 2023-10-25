@@ -1,5 +1,5 @@
-#ifndef TREE_H
-#define TREE_H
+#ifndef BSTREE_H
+#define BSTREE_H
 
 #define COUNT 5
 typedef struct BSTreeNode BSTreeNode;

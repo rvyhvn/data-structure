@@ -1,5 +1,6 @@
 #include "../lib/bstree.h"
 #include "../lib/queue.h"
+#include "../lib/rbtree.h"
 #include "../lib/sorting.h"
 #include "../lib/stack.h"
 #include "../lib/structure.h"
@@ -22,6 +23,7 @@ void printArray(int arr[], int size) {
 void stackMenu();
 void queueMenu();
 void bstreeMenu();
+void rbtreeMenu();
 
 int main() {
     int originalArr[] = {
@@ -45,13 +47,15 @@ int main() {
 	printf("Main Menu:\n");
 	printf("1. Stack\n");
 	printf("2. Queue\n");
-	printf("3. Tree\n");
-	printf("4. Bubble Sort\n");
-	printf("5. Selection Sort\n");
-	printf("6. Insertion Sort\n");
-	printf("7. Advanced Sorting (Merge)\n");
-	printf("8. Advanced Sorting (Shell)\n");
-	printf("9. Advanced Sorting (Quick Sort)\n");
+	printf("3. Binary Search Tree\n");
+	printf("4. Red-Black Tree\n");
+	printf("5. Hash Table (Not Available Yet)\n");
+	printf("6. Bubble Sort\n");
+	printf("7. Selection Sort\n");
+	printf("8. Insertion Sort\n");
+	printf("9. Merge Sort\n");
+	printf("10. Shell Sort\n");
+	printf("11. Quick Sort\n");
 	printf("0. Quit\n");
 
 	printf("Option: ");
@@ -59,19 +63,27 @@ int main() {
 
 	switch (mainChoice) {
 	case 1:
-	    printf("Data Structure (Stack)\n");
+	    printf("Stack\n");
 	    stackMenu();
 	    break;
 	case 2:
-	    printf("Data Structure (Queue)\n");
+	    printf("Queue\n");
 	    queueMenu();
 	    break;
 	case 3:
-	    printf("Data Structure (Tree)\n");
+	    printf("Binary Search Tree\n");
 	    bstreeMenu();
 	    break;
 	case 4:
-	    printf("Sorting (Bubble)\n");
+	    printf("Red-Black Tree\n");
+	    rbtreeMenu();
+	    break;
+	case 5:
+	    printf("Hash Table\n");
+	    rbtreeMenu();
+	    break;
+	case 6:
+	    printf("Bubble Sort\n");
 	    printf("Unsorted Array: \n");
 	    printArray(arr, arr_size);
 	    start = clock();
@@ -84,8 +96,8 @@ int main() {
 
 	    memcpy(arr, originalArr, arr_size * sizeof(int));
 	    break;
-	case 5:
-	    printf("Sorting (Selection)\n");
+	case 7:
+	    printf("Selection Sort\n");
 	    printf("Unsorted Array: \n");
 	    printArray(arr, arr_size);
 	    start = clock();
@@ -99,8 +111,8 @@ int main() {
 
 	    memcpy(arr, originalArr, arr_size * sizeof(int));
 	    break;
-	case 6:
-	    printf("Sorting (Insertion)\n");
+	case 8:
+	    printf("Insertion Sort\n");
 	    printf("Unsorted Array: \n");
 	    printArray(arr, arr_size);
 	    start = clock();
@@ -114,8 +126,8 @@ int main() {
 
 	    memcpy(arr, originalArr, arr_size * sizeof(int));
 	    break;
-	case 7:
-	    printf("Advanced Sorting (Merge)\n");
+	case 9:
+	    printf("Merge Sort\n");
 	    printf("Unsorted Array: \n");
 	    printArray(arr, arr_size);
 	    start = clock();
@@ -128,8 +140,8 @@ int main() {
 
 	    memcpy(arr, originalArr, arr_size * sizeof(int));
 	    break;
-	case 8:
-	    printf("Sorting (Shell)\n");
+	case 10:
+	    printf("Shell Sort\n");
 	    printf("Unsorted Array: \n");
 	    printArray(arr, arr_size);
 	    start = clock();
@@ -140,8 +152,8 @@ int main() {
 
 	    memcpy(arr, originalArr, arr_size * sizeof(int));
 	    break;
-	case 9:
-	    printf("Sorting (Quick Sort)\n");
+	case 11:
+	    printf("Quick Sort\n");
 	    printf("Unsorted Array: \n");
 	    printArray(arr, arr_size);
 	    start = clock();

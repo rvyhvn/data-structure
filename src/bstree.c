@@ -147,7 +147,7 @@ void bstreeMenu() {
     int treeChoice;
     BSTreeNode *root = NULL;
     do {
-	printf("Binary Tree Menu:\n");
+	printf("Binary Seach Tree Menu:\n");
 	printf("1. Insert Node\t\t2. Search Node\t\t3. Delete Node\n");
 	printf("4. Find Minimum Value\t5. Find Maximum Value\t6. Height Of "
 	       "Tree\n");
