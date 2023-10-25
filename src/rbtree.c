@@ -22,12 +22,12 @@ RBTreeNode *newNode(int value, RBTreeNode *parent) {
 }
  
 // Check if the node is the leaf
-int isLeaf(RBTreeNode *n) {
-  if (n->left == NULL && n->right == NULL) {
-    return 1;
-  }
-  return 0;
-}
+// int isLeaf(RBTreeNode *n) {
+//   if (n->left == NULL && n->right == NULL) {
+//     return 1;
+//   }
+//   return 0;
+// }
  
 // Left Rotate
 RBTreeNode *leftRotate(RBTreeNode *node) {
@@ -74,7 +74,7 @@ RBTreeNode *rightRotate(RBTreeNode *node) {
 }
  
 // Check the node after the insertion step
-void checkNode(RBTreeNode *node) {
+void insertFixup(RBTreeNode *node) {
   // If the node is the root
     if (node == NULL || node->parent == NULL) {
     return;
@@ -231,7 +231,11 @@ void checkNode(RBTreeNode *node) {
 void insertRBTNode(int value, RBTreeNode **root) {
   RBTreeNode *buffRoot = *root;
   while (buffRoot) {
-    if (buffRoot->value > value) {
+    if (buffRoot->value == value) {
+      // Value already exists
+      return;
+    }
+    else if (buffRoot->value > value) {
       // Go left
       if (buffRoot->left != NULL) {
         buffRoot = buffRoot->left;
@@ -256,12 +260,12 @@ void insertRBTNode(int value, RBTreeNode **root) {
  
         // Check For Double Red Problems
         break;
-      }
+      } 
     }
   }
  
   while (buffRoot != *root) {
-    checkNode(buffRoot);
+    insertFixup(buffRoot);
     if (buffRoot->parent == NULL) {
       *root = buffRoot;
       break;
@@ -574,14 +578,26 @@ void deleteRBTNode(int value, RBTreeNode **root) {
 void inOrderTraversalRBT(RBTreeNode *root) {
   if (root != NULL) {
     inOrderTraversalRBT(root->left);
-    printf("%d c-%d ", root->value, root->color);
+    if (root->color == 1) {
+      printf("\033[31m%d \033[0m", root->value );
+
+    } else {
+      printf("%d ", root->value);
+    }
     inOrderTraversalRBT(root->right);
   }
 }
 
 void preOrderTraversalRBT(RBTreeNode *root) {
   if (root != NULL) {
-    printf("%d c-%d ", root->value, root->color);
+    if (root->color == 1) {
+      printf("\033[31m%d \033[0m", root->value );
+
+
+    } else {
+      printf("%d ", root->value);
+    }
+
     preOrderTraversalRBT(root->left);
     preOrderTraversalRBT(root->right);
   }
@@ -591,7 +607,12 @@ void postOrderTraversalRBT(RBTreeNode *root) {
   if (root != NULL) {
     postOrderTraversalRBT(root->left);
     postOrderTraversalRBT(root->right);
-    printf("%d c-%d ", root->value, root->color);
+    if (root->color == 1) {
+      printf("\033[31m%d \033[0m", root->value );
+
+    } else {
+      printf("%d ", root->value);
+    }
   }
 }
 
@@ -696,15 +717,17 @@ int rbtreeMenu() {
   RBTreeNode *root = NULL;
   int scanValue, choice = 1;
     while (choice) {
-    printf("1: Insert\t2: Delete\t3: search\t4:Visualize\n"
-         "5: Inorder Traversal\t6: Preorder Traversal\t7: Postorder Traversal\n"
-         "8: Find Minimum\t9: Find Maximum\t10: Find Height\t11: Find Size\n"
-          "0: Quit\n\n"
+    print2DRBT(root);
+    printf("\n");
+    printf("1: Insert\t\t2: Delete\t\t3: search\t\t4:Visualize\n"
+         "5: Inorder Traversal\t\t6: Preorder Traversal\t\t7: Postorder Traversal\n"
+         "8: Find Minimum\t\t9: Find Maximum\t\t10: Find Height\t\t11: Find Size\n"
+          "0: Back To Main Menu\n"
          "Please Enter the Choice :");
   scanf("%d", &choice);
     switch (choice) {
     case 1:
-      printf("\n\nPlease Enter A Value to insert - ");
+      printf("Please Enter A Value to insert: ");
       scanf("%d", &scanValue);
       if (root == NULL) {
         root = newNode(scanValue, NULL);
@@ -712,80 +735,61 @@ int rbtreeMenu() {
       } else {
         insertRBTNode(scanValue, &root);
       }
-      printf("\nSuccessfully Inserted %d in the tree\n\n", scanValue);
-      break;
+      printf("Successfully Inserted %d in the tree.\n", scanValue);
+        break;
     case 2:
-      printf("\n\nPlease Enter A Value to Delete - ");
+      printf("Please Enter A Value to Delete: ");
       scanf("%d", &scanValue);
       deleteRBTNode(scanValue, &root);
-      printf("\nSuccessfully Inserted %d in the tree\n\n", scanValue);
+      printf("Successfully Deleted %d in the tree.\n", scanValue);
       break;
     case 3:
-      printf("\n\nPlease Enter A Value to Search - ");
+      printf("Please Enter A Value to Search: ");
       scanf("%d", &scanValue);
       if (searchRBTNode(scanValue, root) != NULL) {
-        printf("\n%d is present in the tree\n\n", scanValue);
+        printf("%d is present in the tree\n", scanValue);
       } else {
-        printf("\n%d is not present in the tree\n\n", scanValue);
+        printf("%d is not present in the tree.", scanValue);
       }
       break;
     case 4:
-      printf("\nVisualization - \n");
+      printf("Visualization: \n");
       print2DRBT(root);
       break;
     case 5:
-      printf("\nInorder Traversel - ");
+      printf("Inorder Traversal: ");
       inOrderTraversalRBT(root);
-      printf("\n\n");
+      printf("\n");
       break;
     case 6:
-      printf("\nPreorder Traversel - ");
+      printf("Preorder Traversal: ");
       preOrderTraversalRBT(root);
-      printf("\n\n");
+      printf("\n");
       break;
     case 7:
-      printf("\nPostorder Traversel - ");
+      printf("Postorder Traversal: ");
       postOrderTraversalRBT(root);
-      printf("\n\n");
+      printf("\n");
       break;
     case 8:
-      printf("\nMinimum Value - %d\n\n", findMinRBT(root)->value);
+      printf("Minimum Value: %d\n", findMinRBT(root)->value);
       break;
     case 9:
-      printf("\nMaximum Value - %d\n\n", findMaxRBT(root)->value);
+      printf("Maximum Value: %d\n", findMaxRBT(root)->value);
       break;
     case 10:
-      printf("\nHeight of the tree - %d\n\n", findHeightRBT(root));
+      printf("Height of the tree: %d\n", findHeightRBT(root));
       break;
     case 11:
-      printf("\nSize of the tree - %d\n\n", treeSizeRBT(root));
+      printf("Size of the tree: %d\n", treeSizeRBT(root));
       break;
     case 0:
-      return 0;
+      break;
     default:
-      printf("\n\nPlease Enter A Valid Choice\n\n");
+      printf("Invalid menu choice. Please try again.\n");
       break;
     }
   }
-  //   case 3:
-  //     printf("\nInorder Traversel - ");
-  //     inOrderTraversalRBT(root);
-  //     printf("\n\n");
-  //     // checkBlack(root,0);
-  //     // printf("\n");
-  //     break;
-  //   case 4:
-  //     printf("\nVisualization - \n");
-  //     print2DRBT(root);
-  //   default:
-  //     if (root != NULL) {
-  //       printf("Root - %d\n", root->value);
-  //     }
-  //   }
-  //   printf("1 - Input\n2 - Delete\n3 - Inorder Traversel\n4 - "
-  //          "Visualize\n0 - Quit\n\nPlease Enter the Choice - ");
-  //   scanf("%d", &choice);
-  // }
   return 0;
 }
  
